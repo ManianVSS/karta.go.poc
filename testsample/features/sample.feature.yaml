@@ -1,0 +1,9 @@
+---
+name: CalculatorTest
+description: This is a sample YAML format feature file testing a calculator's function
+steps:
+  - step: When the button "1" is pressed
+  - step: And the button "+" is pressed
+  - step: And the button "2" is pressed
+  - step: And the button "=" is pressed
+  - step: And the calculator should display "3"
