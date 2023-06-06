@@ -8,6 +8,6 @@ import (
 )
 
 func main() {
-	fmt.Println("Om Ganeshaya Namah!!")
+	fmt.Println("Xlang parser example!!")
 	xlang.Main()
 }

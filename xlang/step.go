@@ -3,7 +3,7 @@ package xlang
 import "fmt"
 
 type Step interface {
-	init(*Step, string, map[string]string, string, ...Step)
+	init(*Step, string, map[string]string, string, ...Step) (Step, error)
 	execute(Scope) (bool, error)
 }
 
@@ -21,43 +21,47 @@ func runSteps(scope Scope, steps ...Step) (bool, error) {
 }
 
 type BaseStep struct {
-	parent *Step
-	tag    string
-	steps  []Step
+	Parent      *Step
+	Tag         string
+	NestedSteps []Step
 }
 
-func (step *BaseStep) AddSteps(steps ...Step) {
-	step.steps = append((*step).steps, steps...)
+func (baseStep *BaseStep) AddSteps(steps ...Step) {
+	baseStep.NestedSteps = append(baseStep.NestedSteps, steps...)
 }
 
-func (step *BaseStep) init(parent *Step, tag string, attributes map[string]string, text string, steps ...Step) {
-	step.parent = parent
-	step.tag = tag
-	step.steps = steps
+func (baseStep *BaseStep) init(parent *Step, tag string, attributes map[string]string, text string, steps ...Step) (Step, error) {
+	baseStep.Parent = parent
+	baseStep.Tag = tag
+	baseStep.NestedSteps = steps
+	return baseStep, nil
 }
 
-func (step *BaseStep) execute(scope Scope) (bool, error) {
-	return runSteps(scope, (*step).steps...)
+func (baseStep *BaseStep) execute(scope Scope) (bool, error) {
+	return runSteps(scope, baseStep.NestedSteps...)
 }
 
 type GenericStep struct {
 	BaseStep
-	attributes map[string]string
-	text       string
+	Attributes map[string]string
+	Text       string
 }
 
-func (step *GenericStep) AddSteps(steps ...Step) {
-	step.steps = append((*step).steps, steps...)
+func (genericStep *GenericStep) AddSteps(steps ...Step) {
+	genericStep.NestedSteps = append(genericStep.NestedSteps, steps...)
 }
 
-func (step *GenericStep) init(parent *Step, tag string, attributes map[string]string, text string, steps ...Step) {
-	step.BaseStep.init(parent, tag, attributes, text, steps...)
-	step.attributes = attributes
-	step.text = text
+func (genericStep *GenericStep) init(parent *Step, tag string, attributes map[string]string, text string, steps ...Step) (Step, error) {
+	if step, err := genericStep.BaseStep.init(parent, tag, attributes, text, steps...); err != nil {
+		return step, err
+	}
+	genericStep.Attributes = attributes
+	genericStep.Text = text
+	return genericStep, nil
 }
 
-func (step *GenericStep) execute(scope Scope) (bool, error) {
-	fmt.Printf("Parent: %p\n, Tag: %s\n, Attributes: %#v\n, Text: %s\n, Steps: %T\n", step.parent, step.tag, step.attributes, step.text, step.steps)
+func (genericStep *GenericStep) execute(scope Scope) (bool, error) {
+	fmt.Printf("Parent: %p\n, Tag: %s\n, Attributes: %#v\n, Text: %s\n, Steps: %T\n", genericStep.Parent, genericStep.Tag, genericStep.Attributes, genericStep.Text, genericStep.NestedSteps)
 	// fmt.Printf("%v", step)
-	return step.BaseStep.execute(scope)
+	return genericStep.BaseStep.execute(scope)
 }

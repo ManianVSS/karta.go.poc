@@ -1,0 +1,5 @@
+<app>
+    <echo message="Hello world!!" />
+
+    <echo message="Hello world2!!" />
+</app>

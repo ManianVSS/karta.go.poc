@@ -1,20 +1,24 @@
 package xlang
 
+import "fmt"
+
 type Echo struct {
 	BaseStep
 	message string
 }
 
-func (step *Echo) init(parent *Step, tag string, attributes map[string]string, text string, steps ...Step) {
-	step.BaseStep.init(parent, tag, attributes, text, steps...)
+func (echo *Echo) init(parent *Step, tag string, attributes map[string]string, text string, steps ...Step) (Step, error) {
+	echo.BaseStep.init(parent, tag, attributes, text, steps...)
 
 	if message, ok := attributes["message"]; ok {
-		step.message = message
+		echo.message = message
+	} else {
+		return nil, fmt.Errorf("message attribute missing")
 	}
+	return echo, nil
 }
 
-func (step *Echo) execute(scope Scope) (bool, error) {
-	// fmt.Printf("Parent: %p\n, Tag: %s\n, Attributes: %#v\n, Text: %s\n, Steps: %T\n", step.parent, step.tag, step.attributes, step.text, step.steps)
-	// fmt.Printf("%v", step)
-	return step.BaseStep.execute(scope)
+func (echo *Echo) execute(scope Scope) (bool, error) {
+	fmt.Println(echo.message)
+	return echo.BaseStep.execute(scope)
 }
