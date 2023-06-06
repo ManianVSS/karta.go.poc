@@ -8,11 +8,15 @@ type Step interface {
 }
 
 func runSteps(scope Scope, steps ...Step) (bool, error) {
+
 	for _, step := range steps {
-		if _, e := step.execute(scope); e != nil {
-			return false, e
+		if step != nil {
+			if _, e := step.execute(scope); e != nil {
+				return false, e
+			}
 		}
 	}
+
 	return true, nil
 }
 
