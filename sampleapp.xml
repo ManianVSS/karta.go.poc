@@ -1,10 +1,15 @@
 <app>
-    <echo message="Hello world!!" >
-    text for echo tag
+    text for app tag
+    <echo message="First message!!">
+        text for echo tag
     </echo>
 
-    <echo message="Hello world2!!" />
-    <echo attr1="abc" attr2="10" message="random is a misnomer.. it is just pseudo random">
-        text for unkntag
+    <echo message="Second message!!">
+        <echo attr1="abc" attr2="10"
+            message="Nested message is : random is a misnomer.. it is just pseudo random">
+            <echo message="More nested messge is : even artificial intelligence is also a misnomer.. it might just be a dull copy" />
+        </echo>
     </echo>
+
+    <echo message="Third message!!"/>
 </app>

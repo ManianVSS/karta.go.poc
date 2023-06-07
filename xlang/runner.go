@@ -6,31 +6,24 @@ import (
 	"github.com/subchen/go-xmldom"
 )
 
-type InitStepFunction func(string, map[string]string, string) (Step, error)
-
 var StepDefMap map[string]InitStepFunction = map[string]InitStepFunction{}
-
-func createGenericStep(tag string, attributes map[string]string, text string) (Step, error) {
-	genericStep := GenericStep{}
-	return genericStep.init(nil, tag, attributes, text)
-}
-
-func createEchoStep(tag string, attributes map[string]string, text string) (Step, error) {
-	echo := Echo{}
-	return echo.init(nil, tag, attributes, text)
-}
 
 func InitStepDefinitions() {
 	StepDefMap["echo"] = createEchoStep
 }
 
 func GetSteps(parent *Step, node *xmldom.Node) ([]Step, error) {
-
 	steps := []Step{}
 	for _, child := range node.Children {
 		if createStepFunction, ok := StepDefMap[child.Name]; ok {
 			if step, err := createStepFunction(child.Name, xmlAttrToAttributes(child.Attributes), child.Text); err == nil {
 				steps = append(steps, step)
+
+				if childsNestedSteps, err := GetSteps(&step, child); err == nil {
+					step.AddSteps(childsNestedSteps...)
+				} else {
+					return steps, err
+				}
 			} else {
 				return steps, fmt.Errorf("could not parse step %s using step parsing handler function, %s", child.Name, err.Error())
 			}

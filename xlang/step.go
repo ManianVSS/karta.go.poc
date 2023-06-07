@@ -3,6 +3,7 @@ package xlang
 import "fmt"
 
 type Step interface {
+	AddSteps(...Step)
 	init(*Step, string, map[string]string, string, ...Step) (Step, error)
 	execute(Scope) (bool, error)
 }
@@ -47,9 +48,9 @@ type GenericStep struct {
 	Text       string
 }
 
-func (genericStep *GenericStep) AddSteps(steps ...Step) {
-	genericStep.NestedSteps = append(genericStep.NestedSteps, steps...)
-}
+// func (genericStep *GenericStep) AddSteps(steps ...Step) {
+// 	genericStep.NestedSteps = append(genericStep.NestedSteps, steps...)
+// }
 
 func (genericStep *GenericStep) init(parent *Step, tag string, attributes map[string]string, text string, steps ...Step) (Step, error) {
 	if step, err := genericStep.BaseStep.init(parent, tag, attributes, text, steps...); err != nil {
@@ -64,4 +65,11 @@ func (genericStep *GenericStep) execute(scope Scope) (bool, error) {
 	fmt.Printf("Parent: %p\n, Tag: %s\n, Attributes: %#v\n, Text: %s\n, Steps: %T\n", genericStep.Parent, genericStep.Tag, genericStep.Attributes, genericStep.Text, genericStep.NestedSteps)
 	// fmt.Printf("%v", step)
 	return genericStep.BaseStep.execute(scope)
+}
+
+type InitStepFunction func(string, map[string]string, string) (Step, error)
+
+func createGenericStep(tag string, attributes map[string]string, text string) (Step, error) {
+	genericStep := GenericStep{}
+	return genericStep.init(nil, tag, attributes, text)
 }

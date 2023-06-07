@@ -22,3 +22,8 @@ func (echo *Echo) execute(scope Scope) (bool, error) {
 	fmt.Println(echo.message)
 	return echo.BaseStep.execute(scope)
 }
+
+func createEchoStep(tag string, attributes map[string]string, text string) (Step, error) {
+	echo := Echo{}
+	return echo.init(nil, tag, attributes, text)
+}
