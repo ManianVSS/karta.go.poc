@@ -24,7 +24,7 @@ func InitStepDefinitions() {
 	// StepDefMap = map[string]InitStepFunction{
 	// 	"echo": createEchoStep,
 	// }
-	StepDefMap["app"] = createGenericStep
+	// StepDefMap["app"] = createGenericStep
 	StepDefMap["echo"] = createEchoStep
 }
 
@@ -36,24 +36,32 @@ func xmlAttrToAttributes(xmlAttributes []*xmldom.Attribute) map[string]string {
 	return attributesMap
 }
 
-func GetStep(parent *Step, node *xmldom.Node) (Step, error) {
-	if createStepFunction, ok := StepDefMap[node.Name]; ok {
-		return createStepFunction(node.Name, xmlAttrToAttributes(node.Attributes), node.Text)
-	} else {
-		return nil, fmt.Errorf("could not find step definition for %s", node.Name)
-		// return createGenericStep(node.Name, xmlAttrToAttributes(node.Attributes), node.Text)
+func GetSteps(parent *Step, node *xmldom.Node) ([]Step, error) {
+
+	steps := []Step{}
+	for _, child := range node.Children {
+		if createStepFunction, ok := StepDefMap[child.Name]; ok {
+			if step, err := createStepFunction(child.Name, xmlAttrToAttributes(child.Attributes), child.Text); err == nil {
+				steps = append(steps, step)
+			} else {
+				return steps, fmt.Errorf("could not parse step %s using step parsing handler function", node.Name)
+			}
+		} else {
+			return steps, fmt.Errorf("could not find step definition for %s", node.Name)
+			// return createGenericStep(node.Name, xmlAttrToAttributes(node.Attributes), node.Text)
+		}
 	}
+	return steps, nil
 }
 
 func ExecuteFile(fileName string) bool {
 	doc := xmldom.Must(xmldom.ParseFile(fileName))
 	root := doc.Root
 
-	printNode(root)
 	scope := Scope{}
 
-	if rootStep, err := GetStep(nil, root); (err != nil) && (rootStep != nil) {
-		if result, err := rootStep.execute(scope); err != nil {
+	if rootSteps, err := GetSteps(nil, root); (err == nil) && (rootSteps != nil) {
+		if result, err := runSteps(scope, rootSteps...); err == nil {
 			fmt.Println("Program execution result is ", result)
 			return result
 		} else {
@@ -61,7 +69,7 @@ func ExecuteFile(fileName string) bool {
 			return false
 		}
 	} else {
-		fmt.Printf("Program execution error while parsing step %T with error %T\n", rootStep, err)
+		fmt.Printf("Program execution error while parsing step %T with error %T\n", rootSteps, err)
 		return false
 	}
 }
@@ -71,10 +79,10 @@ func Main() {
 	ExecuteFile("sampleapp.xml")
 }
 
-func printNode(node *xmldom.Node) {
-	fmt.Printf("%s, %T, %s\n", node.Name, node.Attributes, node.Text)
+// func printNode(node *xmldom.Node) {
+// 	fmt.Printf("%s, %T, %s\n", node.Name, node.Attributes, node.Text)
 
-	for _, child := range node.Children {
-		printNode(child)
-	}
-}
+// 	for _, child := range node.Children {
+// 		printNode(child)
+// 	}
+// }
