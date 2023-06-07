@@ -11,5 +11,11 @@
         </echo>
     </echo>
 
-    <echo message="Third message!!"/>
+    <echo>
+        Echo message a text
+    </echo>
+
+    <return message="test message for return"/>
+
+    <echo message="This message should not be printed!!"/>
 </app>

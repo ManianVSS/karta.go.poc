@@ -9,16 +9,30 @@ type Step interface {
 }
 
 func runSteps(scope Scope, steps ...Step) (bool, error) {
-
+	overallResult := true
 	for _, step := range steps {
 		if step != nil {
-			if _, e := step.execute(scope); e != nil {
-				return false, e
+			result, err := step.execute(scope)
+			overallResult = overallResult && result
+
+			if err != nil {
+				if _, ok := err.(*MethodReturnError); ok {
+					fmt.Printf("Encountered return %t, %s\n", err, err)
+					break
+				} else {
+					fmt.Printf("Program execution error while executing step %t with error %s\n", step, err.Error())
+				}
+				return overallResult, err
 			}
+			if !overallResult {
+				break
+			}
+		} else {
+			fmt.Printf("Encountered an unexpected condition where step is nil")
 		}
 	}
 
-	return true, nil
+	return overallResult, nil
 }
 
 type BaseStep struct {
@@ -72,4 +86,12 @@ type InitStepFunction func(string, map[string]string, string) (Step, error)
 func createGenericStep(tag string, attributes map[string]string, text string) (Step, error) {
 	genericStep := GenericStep{}
 	return genericStep.init(nil, tag, attributes, text)
+}
+
+type MethodReturnError struct {
+	error
+}
+
+func (methodReturnError *MethodReturnError) Error() string {
+	return ""
 }

@@ -10,6 +10,7 @@ var StepDefMap map[string]InitStepFunction = map[string]InitStepFunction{}
 
 func InitStepDefinitions() {
 	StepDefMap["echo"] = createEchoStep
+	StepDefMap["return"] = createReturnStep
 }
 
 func GetSteps(parent *Step, node *xmldom.Node) ([]Step, error) {
