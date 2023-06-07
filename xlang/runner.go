@@ -21,19 +21,7 @@ func createEchoStep(tag string, attributes map[string]string, text string) (Step
 }
 
 func InitStepDefinitions() {
-	// StepDefMap = map[string]InitStepFunction{
-	// 	"echo": createEchoStep,
-	// }
-	// StepDefMap["app"] = createGenericStep
 	StepDefMap["echo"] = createEchoStep
-}
-
-func xmlAttrToAttributes(xmlAttributes []*xmldom.Attribute) map[string]string {
-	attributesMap := map[string]string{}
-	for _, xmlattr := range xmlAttributes {
-		attributesMap[xmlattr.Name] = xmlattr.Value
-	}
-	return attributesMap
 }
 
 func GetSteps(parent *Step, node *xmldom.Node) ([]Step, error) {
@@ -44,11 +32,10 @@ func GetSteps(parent *Step, node *xmldom.Node) ([]Step, error) {
 			if step, err := createStepFunction(child.Name, xmlAttrToAttributes(child.Attributes), child.Text); err == nil {
 				steps = append(steps, step)
 			} else {
-				return steps, fmt.Errorf("could not parse step %s using step parsing handler function", node.Name)
+				return steps, fmt.Errorf("could not parse step %s using step parsing handler function, %s", child.Name, err.Error())
 			}
 		} else {
-			return steps, fmt.Errorf("could not find step definition for %s", node.Name)
-			// return createGenericStep(node.Name, xmlAttrToAttributes(node.Attributes), node.Text)
+			return steps, fmt.Errorf("could not find step definition for %s", child.Name)
 		}
 	}
 	return steps, nil
@@ -65,11 +52,11 @@ func ExecuteFile(fileName string) bool {
 			fmt.Println("Program execution result is ", result)
 			return result
 		} else {
-			fmt.Printf("Program execution error while executing step %t with error %T\n", result, err)
+			fmt.Printf("Program execution error while executing step %t with error %s\n", result, err.Error())
 			return false
 		}
 	} else {
-		fmt.Printf("Program execution error while parsing step %T with error %T\n", rootSteps, err)
+		fmt.Printf("Program execution error while parsing step %v with error %s\n", rootSteps, err.Error())
 		return false
 	}
 }
@@ -78,11 +65,3 @@ func Main() {
 	InitStepDefinitions()
 	ExecuteFile("sampleapp.xml")
 }
-
-// func printNode(node *xmldom.Node) {
-// 	fmt.Printf("%s, %T, %s\n", node.Name, node.Attributes, node.Text)
-
-// 	for _, child := range node.Children {
-// 		printNode(child)
-// 	}
-// }

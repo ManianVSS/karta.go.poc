@@ -1,5 +1,10 @@
 <app>
-    <echo message="Hello world!!" />
+    <echo message="Hello world!!" >
+    text for echo tag
+    </echo>
 
     <echo message="Hello world2!!" />
+    <echo attr1="abc" attr2="10" message="random is a misnomer.. it is just pseudo random">
+        text for unkntag
+    </echo>
 </app>
