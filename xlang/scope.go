@@ -3,7 +3,7 @@ package xlang
 type Scope struct {
 	parent    *Scope
 	variables map[string]any
-	functions map[string][]Step
+	functions map[string]*FunctionDefinition
 }
 
 func (scope *Scope) get_variable(name string) (any, bool) {
@@ -17,7 +17,7 @@ func (scope *Scope) get_variable(name string) (any, bool) {
 	}
 }
 
-func (scope *Scope) get_function(name string) ([]Step, bool) {
+func (scope *Scope) get_function(name string) (*FunctionDefinition, bool) {
 
 	if value, ok := (*scope).functions[name]; ok {
 		return value, ok

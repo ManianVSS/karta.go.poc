@@ -11,6 +11,8 @@ var StepDefMap map[string]InitStepFunction = map[string]InitStepFunction{}
 func InitStepDefinitions() {
 	StepDefMap["echo"] = createEchoStep
 	StepDefMap["return"] = createReturnStep
+	StepDefMap["func"] = createFunctionDefinitionStep
+	StepDefMap["call"] = createFunctionCallStep
 }
 
 func GetSteps(parent *Step, node *xmldom.Node) ([]Step, error) {
@@ -40,6 +42,8 @@ func ExecuteFile(fileName string) bool {
 	root := doc.Root
 
 	scope := Scope{}
+	scope.variables = map[string]any{}
+	scope.functions = map[string]*FunctionDefinition{}
 
 	if rootSteps, err := GetSteps(nil, root); (err == nil) && (rootSteps != nil) {
 		if result, err := runSteps(scope, rootSteps...); err == nil {

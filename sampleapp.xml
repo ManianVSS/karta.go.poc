@@ -4,17 +4,18 @@
         text for echo tag
     </echo>
 
-    <echo message="Second message!!">
+    <func name="MyFunc!!">        
         <echo attr1="abc" attr2="10"
             message="Nested message is : random is a misnomer.. it is just pseudo random">
+            <!-- nested steps inside echo have no use-->
             <echo message="More nested messge is : even artificial intelligence is also a misnomer.. it might just be a dull copy" />
         </echo>
-    </echo>
+    </func>
 
     <echo>
         Echo message a text
     </echo>
-
+    <call name="MyFunc!!"/>
     <return message="test message for return"/>
 
     <echo message="This message should not be printed!!"/>
