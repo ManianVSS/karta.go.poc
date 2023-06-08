@@ -13,6 +13,7 @@ func InitStepDefinitions() {
 	StepDefMap["return"] = createReturnStep
 	StepDefMap["func"] = createFunctionDefinitionStep
 	StepDefMap["call"] = createFunctionCallStep
+	StepDefMap["genericStep"] = createGenericStep
 }
 
 func GetSteps(parent *Step, node *xmldom.Node) ([]Step, error) {
@@ -46,7 +47,7 @@ func ExecuteFile(fileName string) bool {
 	scope.functions = map[string]*FunctionDefinition{}
 
 	if rootSteps, err := GetSteps(nil, root); (err == nil) && (rootSteps != nil) {
-		if result, err := runSteps(scope, rootSteps...); err == nil {
+		if result, err := RunSteps(scope, rootSteps...); err == nil {
 			fmt.Println("Program execution result is ", result)
 			return result
 		} else {

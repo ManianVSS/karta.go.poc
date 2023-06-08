@@ -10,10 +10,10 @@ type Echo struct {
 	message string
 }
 
-func (echo *Echo) init(parent *Step, tag string, attributes map[string]string, text string, steps ...Step) (Step, error) {
+func (echo *Echo) Init(parent *Step, tag string, attributes map[string]string, text string, steps ...Step) (Step, error) {
 
-	if baseStep, err := echo.BaseStep.init(parent, tag, attributes, text, steps...); err != nil {
-		return baseStep, err
+	if _, err := echo.BaseStep.Init(parent, tag, attributes, text, steps...); err != nil {
+		return echo, err
 	}
 
 	if message, ok := attributes["message"]; ok {
@@ -26,14 +26,14 @@ func (echo *Echo) init(parent *Step, tag string, attributes map[string]string, t
 	return echo, nil
 }
 
-func (echo *Echo) execute(scope Scope) (bool, error) {
+func (echo *Echo) Execute(scope Scope) (bool, error) {
 	fmt.Println(echo.message)
 	return true, nil
 }
 
 func createEchoStep(tag string, attributes map[string]string, text string) (Step, error) {
 	echo := Echo{}
-	return echo.init(nil, tag, attributes, text)
+	return echo.Init(nil, tag, attributes, text)
 }
 
 type ReturnStep struct {
@@ -41,20 +41,21 @@ type ReturnStep struct {
 	// returnValue any
 }
 
-func (returnStep *ReturnStep) init(parent *Step, tag string, attributes map[string]string, text string, steps ...Step) (Step, error) {
+func (returnStep *ReturnStep) Init(parent *Step, tag string, attributes map[string]string, text string, steps ...Step) (Step, error) {
 	// fmt.Println("Hit return step init")
-	return returnStep.BaseStep.init(parent, tag, attributes, text, steps...)
+	_, err := returnStep.BaseStep.Init(parent, tag, attributes, text, steps...)
+	return returnStep, err
 }
 
-func (returnStep *ReturnStep) execute(scope Scope) (bool, error) {
-	fmt.Println("Hit return step execute")
+func (returnStep *ReturnStep) Execute(scope Scope) (bool, error) {
+	// fmt.Println("Hit return step execute")
 	return false, &MethodReturnError{}
 }
 
 func createReturnStep(tag string, attributes map[string]string, text string) (Step, error) {
 	// fmt.Println("Hit return step create")
 	returnStep := ReturnStep{}
-	return returnStep.init(nil, tag, attributes, text)
+	return returnStep.Init(nil, tag, attributes, text)
 }
 
 type FunctionDefinition struct {
@@ -64,10 +65,10 @@ type FunctionDefinition struct {
 	outputParameters []string
 }
 
-func (functionDefinition *FunctionDefinition) init(parent *Step, tag string, attributes map[string]string, text string, steps ...Step) (Step, error) {
+func (functionDefinition *FunctionDefinition) Init(parent *Step, tag string, attributes map[string]string, text string, steps ...Step) (Step, error) {
 
-	if baseStep, err := functionDefinition.BaseStep.init(parent, tag, attributes, text, steps...); err != nil {
-		return baseStep, err
+	if _, err := functionDefinition.BaseStep.Init(parent, tag, attributes, text, steps...); err != nil {
+		return functionDefinition, err
 	}
 
 	if name, ok := attributes["name"]; ok {
@@ -90,7 +91,7 @@ func (functionDefinition *FunctionDefinition) init(parent *Step, tag string, att
 	return functionDefinition, nil
 }
 
-func (functionDefinition *FunctionDefinition) execute(scope Scope) (bool, error) {
+func (functionDefinition *FunctionDefinition) Execute(scope Scope) (bool, error) {
 	fmt.Println("declaring func ", functionDefinition.name, "(", functionDefinition.inputParameters, ")", functionDefinition.outputParameters)
 	if _, ok := scope.functions[functionDefinition.name]; !ok {
 		scope.functions[functionDefinition.name] = functionDefinition
@@ -102,7 +103,7 @@ func (functionDefinition *FunctionDefinition) execute(scope Scope) (bool, error)
 
 func createFunctionDefinitionStep(tag string, attributes map[string]string, text string) (Step, error) {
 	functionDefinition := FunctionDefinition{}
-	return functionDefinition.init(nil, tag, attributes, text)
+	return functionDefinition.Init(nil, tag, attributes, text)
 }
 
 type FunctionCall struct {
@@ -110,10 +111,10 @@ type FunctionCall struct {
 	name string
 }
 
-func (functionCall *FunctionCall) init(parent *Step, tag string, attributes map[string]string, text string, steps ...Step) (Step, error) {
+func (functionCall *FunctionCall) Init(parent *Step, tag string, attributes map[string]string, text string, steps ...Step) (Step, error) {
 
-	if baseStep, err := functionCall.BaseStep.init(parent, tag, attributes, text, steps...); err != nil {
-		return baseStep, err
+	if _, err := functionCall.BaseStep.Init(parent, tag, attributes, text, steps...); err != nil {
+		return functionCall, err
 	}
 
 	if name, ok := attributes["name"]; ok {
@@ -125,7 +126,7 @@ func (functionCall *FunctionCall) init(parent *Step, tag string, attributes map[
 	return functionCall, nil
 }
 
-func (functionCall *FunctionCall) execute(scope Scope) (bool, error) {
+func (functionCall *FunctionCall) Execute(scope Scope) (bool, error) {
 
 	if functionDefinition, ok := scope.get_function(functionCall.name); ok {
 		functionScope := Scope{}
@@ -140,7 +141,7 @@ func (functionCall *FunctionCall) execute(scope Scope) (bool, error) {
 			}
 		}
 		fmt.Println("func call", functionCall.name, "(", functionScope.variables, ")")
-		if result, err := runSteps(functionScope, functionDefinition.NestedSteps...); err != nil {
+		if result, err := RunSteps(functionScope, functionDefinition.NestedSteps...); err != nil {
 
 			for _, outputParameter := range functionDefinition.outputParameters {
 
@@ -162,5 +163,5 @@ func (functionCall *FunctionCall) execute(scope Scope) (bool, error) {
 
 func createFunctionCallStep(tag string, attributes map[string]string, text string) (Step, error) {
 	functionCall := FunctionCall{}
-	return functionCall.init(nil, tag, attributes, text)
+	return functionCall.Init(nil, tag, attributes, text)
 }
