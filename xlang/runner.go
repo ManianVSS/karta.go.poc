@@ -16,29 +16,28 @@ func InitStepDefinitions() {
 	StepDefMap["genericStep"] = createBaseStep
 }
 
-func GetSteps(parent *Step, node *xmldom.Node) ([]Step, error) {
-	steps := []Step{}
-	for _, child := range node.Children {
-		if createStepFunction, ok := StepDefMap[child.Name]; ok {
-			if step, err := createStepFunction(child.Name, xmlAttrToAttributes(child.Attributes), child.Text); err == nil {
-				steps = append(steps, step)
-
-				if childsNestedSteps, err := GetSteps(&step, child); err == nil {
-					step.AddNestedSteps(childsNestedSteps...)
-				} else {
-					return steps, err
-				}
-			} else {
-				return steps, fmt.Errorf("could not parse step %s using step parsing handler function, %s", child.Name, err.Error())
-			}
-		} else {
-			return steps, fmt.Errorf("could not find step definition for %s", child.Name)
-		}
+func GetStepFromNode(parent *Step, node *xmldom.Node) (Step, error) {
+	createStepFunction, ok := StepDefMap[node.Name]
+	if !ok {
+		createStepFunction = createBaseStep
 	}
-	return steps, nil
+
+	if step, err := createStepFunction(node.Name, xmlAttrToAttributes(node.Attributes), node.Text); err == nil {
+		step.Parent(parent)
+		// steps = append(steps, step)
+
+		for _, child := range node.Children {
+			if childsNestedStep, err := GetStepFromNode(&step, child); err == nil {
+				step.AddNestedSteps(childsNestedStep)
+			}
+		}
+		return step, err
+	} else {
+		return step, fmt.Errorf("could not parse step %s using step parsing handler function, %s", node.Name, err.Error())
+	}
 }
 
-func ExecuteFile(fileName string) bool {
+func ExecuteFile(fileName string) error {
 	doc := xmldom.Must(xmldom.ParseFile(fileName))
 	root := doc.Root
 
@@ -46,21 +45,22 @@ func ExecuteFile(fileName string) bool {
 	scope.variables = map[string]any{}
 	scope.functions = map[string]*FunctionDefinition{}
 
-	if rootSteps, err := GetSteps(nil, root); (err == nil) && (rootSteps != nil) {
-		if result, err := RunSteps(scope, rootSteps...); err == nil {
-			fmt.Println("Program execution result is ", result)
-			return result
-		} else {
-			fmt.Printf("Program execution error while executing step %t with error %s\n", result, err.Error())
-			return false
-		}
-	} else {
-		fmt.Printf("Program execution error while parsing step %v with error %s\n", rootSteps, err.Error())
-		return false
+	rootStep, err := GetStepFromNode(nil, root)
+
+	if err != nil {
+		return err
 	}
+
+	if rootStep == nil {
+		return fmt.Errorf("unexpected program parsing error; Nil root step")
+	}
+
+	return rootStep.Execute(scope)
 }
 
 func Main() {
 	InitStepDefinitions()
-	ExecuteFile("sampleapp.xml")
+	if err := ExecuteFile("sampleapp.xml"); err != nil {
+		fmt.Printf("Program execution error %s\n", err.Error())
+	}
 }
