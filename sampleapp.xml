@@ -35,6 +35,6 @@
         <echo message="[@{name}]: @{message2}" />
     </step>
 
-    <customTag message1="use1_msg1" message2="use1_msg2" />
-    <customTag message1="use2_msg1" message2="use2_msg2" />
+    <customTag name="user1" message1="user1_msg1" message2="user1_msg2" />
+    <customTag name="user2" message1="user2_msg1" message2="user2_msg2" />
 </app>

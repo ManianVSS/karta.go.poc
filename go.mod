@@ -4,6 +4,5 @@ go 1.20
 
 require (
 	github.com/antchfx/xpath v0.0.0-20170515025933-1f3266e77307 // indirect
-	github.com/subchen/go-xmldom v1.1.2 
-	gopkg.in/yaml.v3 v3.0.1 // indirect
+	github.com/subchen/go-xmldom v1.1.2
 )

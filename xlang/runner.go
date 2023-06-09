@@ -14,9 +14,6 @@ func GetStepFromNode(parent Step, node *xmldom.Node) (Step, error) {
 	}
 
 	if step, err := createStepFunction(parent, node.Name, xmlAttrToAttributes(node.Attributes), node.Text); err == nil {
-		// step.Parent(parent)
-		// steps = append(steps, step)
-
 		for _, child := range node.Children {
 			if childsNestedStep, err := GetStepFromNode(step, child); err == nil {
 				step.AddNestedSteps(childsNestedStep)
@@ -39,18 +36,6 @@ func ExecuteFile(fileName string) error {
 	scope := Scope{}
 	scope.variables = map[string]any{}
 	scope.functions = map[string][]Step{}
-
-	// rootStep, err := GetStepFromNode(nil, root)
-
-	// if err != nil {
-	// 	return err
-	// }
-
-	// if rootStep == nil {
-	// 	return fmt.Errorf("unexpected program parsing error; Nil root step")
-	// }
-
-	// return rootStep.Execute(&scope)
 
 	var rootStep BaseStep = BaseStep{
 		tag:        root.Name,

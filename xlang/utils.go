@@ -21,7 +21,7 @@ func replaceVariableInString(stringToProcess string, variableName string, variab
 	return strings.Replace(stringToProcess, "${"+variableName+"}", fmt.Sprintf("%v", variableValue), -1)
 }
 
-func replaceVarsInString(str string, variables map[string]any, xmlattributes map[string]string) string {
+func replaceVarsInString(str string, variables map[string]any, xmlparentattributes map[string]string) string {
 	processedString := str
 
 	for {
@@ -35,7 +35,7 @@ func replaceVarsInString(str string, variables map[string]any, xmlattributes map
 			}
 		}
 
-		for key, value := range xmlattributes {
+		for key, value := range xmlparentattributes {
 			newString := strings.Replace(processedString, "@{"+key+"}", value, -1)
 
 			if processedString != newString {
