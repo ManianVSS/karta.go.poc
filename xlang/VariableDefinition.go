@@ -39,7 +39,13 @@ func (variableDefinition *VariableDefinition) Init(tag string, attributes map[st
 }
 
 func (variableDefinition *VariableDefinition) Execute(scope *Scope) error {
-	strReplacedWithVariables := replaceVariablesInString(variableDefinition.value, scope.variables)
+
+	var parentAttributes map[string]string
+	if variableDefinition.parent != nil {
+		parentAttributes = variableDefinition.parent.Attributes()
+	}
+
+	strReplacedWithVariables := replaceVarsInString(variableDefinition.value, scope.variables, parentAttributes)
 	if strToVarFunction, ok := variableParserFunctionMap[variableDefinition.varType]; ok {
 		if parsedValue, err := strToVarFunction(strReplacedWithVariables); err == nil {
 			scope.variables[variableDefinition.name] = parsedValue
@@ -52,7 +58,7 @@ func (variableDefinition *VariableDefinition) Execute(scope *Scope) error {
 	return nil
 }
 
-func createVariableDefinitionStep(tag string, attributes map[string]string, text string) (Step, error) {
+func createVariableDefinitionStep(parent Step, tag string, attributes map[string]string, text string) (Step, error) {
 	variableDefinition := &VariableDefinition{}
 	return variableDefinition, variableDefinition.Init(tag, attributes, text)
 }

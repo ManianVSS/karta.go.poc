@@ -19,7 +19,7 @@ func (returnStep *ReturnStep) Execute(scope *Scope) error {
 	return &MethodReturnError{}
 }
 
-func createReturnStep(tag string, attributes map[string]string, text string) (Step, error) {
+func createReturnStep(parent Step, tag string, attributes map[string]string, text string) (Step, error) {
 	returnStep := &ReturnStep{}
 	return returnStep, returnStep.Init(tag, attributes, text)
 }

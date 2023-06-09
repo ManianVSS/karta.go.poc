@@ -74,7 +74,7 @@ func (functionCall *FunctionCall) Execute(scope *Scope) error {
 	}
 }
 
-func createFunctionCallStep(tag string, attributes map[string]string, text string) (Step, error) {
+func createFunctionCallStep(parent Step, tag string, attributes map[string]string, text string) (Step, error) {
 	functionCall := &FunctionCall{}
 	return functionCall, functionCall.Init(tag, attributes, text)
 }

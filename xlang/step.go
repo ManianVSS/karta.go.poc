@@ -6,13 +6,14 @@ import (
 )
 
 type Step interface {
-	Parent(*Step)
+	Parent(Step) Step
+	Attributes() map[string]string
 	Init(string, map[string]string, string) error
 	AddNestedSteps(...Step)
 	Execute(*Scope) error
 }
 
-type InitStepFunction func(string, map[string]string, string) (Step, error)
+type InitStepFunction func(Step, string, map[string]string, string) (Step, error)
 
 var stepDefMap map[string]InitStepFunction = map[string]InitStepFunction{}
 
@@ -31,6 +32,8 @@ func InitStepDefinitions() {
 	stepDefMap["func"] = createFunctionDefinitionStep
 	stepDefMap["call"] = createFunctionCallStep
 	stepDefMap["return"] = createReturnStep
+
+	stepDefMap["step"] = createCustomStepDefinitionStep
 }
 
 type StrToVarFunction func(string) (any, error)
@@ -74,15 +77,22 @@ func RunSteps(scope *Scope, steps ...Step) error {
 }
 
 type BaseStep struct {
-	parent      *Step
+	parent      Step
 	tag         string
 	attributes  map[string]string
 	text        string
 	nestedSteps []Step
 }
 
-func (baseStep *BaseStep) Parent(parent *Step) {
-	baseStep.parent = parent
+func (baseStep *BaseStep) Parent(parent Step) Step {
+	if parent != nil {
+		baseStep.parent = parent
+	}
+	return baseStep.parent
+}
+
+func (baseStep *BaseStep) Attributes() map[string]string {
+	return baseStep.attributes
 }
 
 func (baseStep *BaseStep) Init(tag string, attributes map[string]string, text string) error {
@@ -94,17 +104,16 @@ func (baseStep *BaseStep) Init(tag string, attributes map[string]string, text st
 
 func (baseStep *BaseStep) AddNestedSteps(steps ...Step) {
 	if baseStep.nestedSteps == nil {
-		baseStep.nestedSteps = steps
-	} else {
-		baseStep.nestedSteps = append(baseStep.nestedSteps, steps...)
+		baseStep.nestedSteps = []Step{}
 	}
+	baseStep.nestedSteps = append(baseStep.nestedSteps, steps...)
 }
 
 func (baseStep *BaseStep) Execute(scope *Scope) error {
 	return RunSteps(scope, baseStep.nestedSteps...)
 }
 
-func createBaseStep(tag string, attributes map[string]string, text string) (Step, error) {
+func createBaseStep(parent Step, tag string, attributes map[string]string, text string) (Step, error) {
 	baseStep := &BaseStep{}
 	return baseStep, baseStep.Init(tag, attributes, text)
 }

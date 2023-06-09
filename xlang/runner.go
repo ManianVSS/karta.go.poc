@@ -6,20 +6,25 @@ import (
 	"github.com/subchen/go-xmldom"
 )
 
-func GetStepFromNode(parent *Step, node *xmldom.Node) (Step, error) {
+func GetStepFromNode(parent Step, node *xmldom.Node) (Step, error) {
 	createStepFunction, ok := stepDefMap[node.Name]
 	if !ok {
+		// fmt.Printf("Unregistered tag %s\n", node.Name)
 		createStepFunction = createBaseStep
 	}
 
-	if step, err := createStepFunction(node.Name, xmlAttrToAttributes(node.Attributes), node.Text); err == nil {
-		step.Parent(parent)
+	if step, err := createStepFunction(parent, node.Name, xmlAttrToAttributes(node.Attributes), node.Text); err == nil {
+		// step.Parent(parent)
 		// steps = append(steps, step)
 
 		for _, child := range node.Children {
-			if childsNestedStep, err := GetStepFromNode(&step, child); err == nil {
+			if childsNestedStep, err := GetStepFromNode(step, child); err == nil {
 				step.AddNestedSteps(childsNestedStep)
 			}
+		}
+
+		if step.Parent(nil) == nil {
+			step.Parent(parent)
 		}
 		return step, err
 	} else {
@@ -35,17 +40,39 @@ func ExecuteFile(fileName string) error {
 	scope.variables = map[string]any{}
 	scope.functions = map[string][]Step{}
 
-	rootStep, err := GetStepFromNode(nil, root)
+	// rootStep, err := GetStepFromNode(nil, root)
 
-	if err != nil {
-		return err
+	// if err != nil {
+	// 	return err
+	// }
+
+	// if rootStep == nil {
+	// 	return fmt.Errorf("unexpected program parsing error; Nil root step")
+	// }
+
+	// return rootStep.Execute(&scope)
+
+	var rootStep BaseStep = BaseStep{
+		tag:        root.Name,
+		attributes: xmlAttrToAttributes(root.Attributes),
+		text:       root.Text,
 	}
 
-	if rootStep == nil {
-		return fmt.Errorf("unexpected program parsing error; Nil root step")
-	}
+	for _, mainStepNode := range root.Children {
+		if mainStep, err := GetStepFromNode(&rootStep, mainStepNode); err == nil {
 
-	return rootStep.Execute(&scope)
+			if mainStep == nil {
+				return fmt.Errorf("unexpected program parsing error; Nil root step")
+			}
+
+			if err := mainStep.Execute(&scope); err != nil {
+				return err
+			}
+		} else {
+			return err
+		}
+	}
+	return nil
 }
 
 func Main() {

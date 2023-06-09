@@ -29,12 +29,12 @@ func (functionDefinition *FunctionDefinition) Execute(scope *Scope) error {
 	if _, ok := scope.functions[functionDefinition.name]; !ok {
 		scope.functions[functionDefinition.name] = functionDefinition.nestedSteps
 	} else {
-		return fmt.Errorf("function definitions already present for name %s", functionDefinition.name)
+		return fmt.Errorf("function definition already present for name %s", functionDefinition.name)
 	}
 	return nil
 }
 
-func createFunctionDefinitionStep(tag string, attributes map[string]string, text string) (Step, error) {
+func createFunctionDefinitionStep(parent Step, tag string, attributes map[string]string, text string) (Step, error) {
 	functionDefinition := &FunctionDefinition{}
 	return functionDefinition, functionDefinition.Init(tag, attributes, text)
 }

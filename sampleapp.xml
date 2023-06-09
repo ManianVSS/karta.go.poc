@@ -1,5 +1,5 @@
-<app>
-    <echo message="First message!!">
+<app appAttr1="appVal1">
+    <echo message="First message: @{appAttr1}!!">
         text for echo tag
     </echo>
 
@@ -28,4 +28,13 @@
     <call name="MyFunc!!" inputParameters="myVar1" outputParameters="myLocalVar1" />
 
     <echo message="myLocalVar1 is ${myLocalVar1}" />
+
+
+    <step name="customTag">
+        <echo message="[@{name}]: @{message1}" />
+        <echo message="[@{name}]: @{message2}" />
+    </step>
+
+    <customTag message1="use1_msg1" message2="use1_msg2" />
+    <customTag message1="use2_msg1" message2="use2_msg2" />
 </app>

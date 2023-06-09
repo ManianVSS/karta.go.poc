@@ -26,11 +26,15 @@ func (echo *Echo) Init(tag string, attributes map[string]string, text string) er
 }
 
 func (echo *Echo) Execute(scope *Scope) error {
-	_, err := fmt.Println(replaceVariablesInString(echo.message, scope.variables))
+	var parentAttributes map[string]string
+	if echo.parent != nil {
+		parentAttributes = echo.parent.Attributes()
+	}
+	_, err := fmt.Println(replaceVarsInString(echo.message, scope.variables, parentAttributes))
 	return err
 }
 
-func createEchoStep(tag string, attributes map[string]string, text string) (Step, error) {
+func createEchoStep(parent Step, tag string, attributes map[string]string, text string) (Step, error) {
 	echo := &Echo{}
 	return echo, echo.Init(tag, attributes, text)
 }
