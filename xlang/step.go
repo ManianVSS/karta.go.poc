@@ -3,8 +3,8 @@ package xlang
 import "fmt"
 
 type Step interface {
-	AddSteps(...Step)
 	Init(*Step, string, map[string]string, string, ...Step) (Step, error)
+	AddNestedSteps(...Step)
 	Execute(Scope) (bool, error)
 }
 
@@ -36,57 +36,40 @@ func RunSteps(scope Scope, steps ...Step) (bool, error) {
 }
 
 type BaseStep struct {
-	Parent      *Step
-	Tag         string
-	NestedSteps []Step
+	parent      *Step
+	tag         string
+	attributes  map[string]string
+	text        string
+	nestedSteps []Step
 }
 
-func (baseStep *BaseStep) AddSteps(steps ...Step) {
-	baseStep.NestedSteps = append(baseStep.NestedSteps, steps...)
+func (baseStep *BaseStep) AddNestedSteps(steps ...Step) {
+	if baseStep.nestedSteps == nil {
+		baseStep.nestedSteps = steps
+	} else {
+		baseStep.nestedSteps = append(baseStep.nestedSteps, steps...)
+	}
 }
 
 func (baseStep *BaseStep) Init(parent *Step, tag string, attributes map[string]string, text string, steps ...Step) (Step, error) {
-	baseStep.Parent = parent
-	baseStep.Tag = tag
-	baseStep.NestedSteps = steps
+	baseStep.parent = parent
+	baseStep.tag = tag
+	baseStep.attributes = attributes
+	baseStep.text = text
+	baseStep.nestedSteps = steps
 	return baseStep, nil
 }
 
 func (baseStep *BaseStep) Execute(scope Scope) (bool, error) {
-	return RunSteps(scope, baseStep.NestedSteps...)
+	return RunSteps(scope, baseStep.nestedSteps...)
 }
 
-type GenericStep struct {
-	BaseStep
-	Attributes map[string]string
-	Text       string
-}
-
-// func (genericStep *GenericStep) AddSteps(steps ...Step) {
-// 	genericStep.NestedSteps = append(genericStep.NestedSteps, steps...)
-// }
-
-func (genericStep *GenericStep) init(parent *Step, tag string, attributes map[string]string, text string, steps ...Step) (Step, error) {
-	if _, err := genericStep.BaseStep.Init(parent, tag, attributes, text, steps...); err != nil {
-		return genericStep, err
-	}
-	genericStep.Attributes = attributes
-	genericStep.Text = text
-	return genericStep, nil
-}
-
-func (genericStep *GenericStep) Execute(scope Scope) (bool, error) {
-	fmt.Printf("Parent: %p\n, Tag: %s\n, Attributes: %#v\n, Text: %s\n, Steps: %T\n", genericStep.Parent, genericStep.Tag, genericStep.Attributes, genericStep.Text, genericStep.NestedSteps)
-	// fmt.Printf("%v", step)
-	return genericStep.BaseStep.Execute(scope)
+func createBaseStep(tag string, attributes map[string]string, text string) (Step, error) {
+	genericStep := &BaseStep{}
+	return genericStep.Init(nil, tag, attributes, text)
 }
 
 type InitStepFunction func(string, map[string]string, string) (Step, error)
-
-func createGenericStep(tag string, attributes map[string]string, text string) (Step, error) {
-	genericStep := GenericStep{}
-	return genericStep.init(nil, tag, attributes, text)
-}
 
 type MethodReturnError struct {
 }

@@ -16,10 +16,10 @@ func (echo *Echo) Init(parent *Step, tag string, attributes map[string]string, t
 		return echo, err
 	}
 
-	if message, ok := attributes["message"]; ok {
+	if message, ok := echo.attributes["message"]; ok {
 		echo.message = message
-	} else if text != "" {
-		echo.message = text
+	} else if echo.text != "" {
+		echo.message = echo.text
 	} else {
 		return nil, fmt.Errorf("message attribute missing")
 	}
@@ -71,19 +71,19 @@ func (functionDefinition *FunctionDefinition) Init(parent *Step, tag string, att
 		return functionDefinition, err
 	}
 
-	if name, ok := attributes["name"]; ok {
+	if name, ok := functionDefinition.attributes["name"]; ok {
 		functionDefinition.name = name
 	} else {
 		return nil, fmt.Errorf("name attribute missing")
 	}
 
-	if inputParameters, ok := attributes["inputParameters"]; ok {
+	if inputParameters, ok := functionDefinition.attributes["inputParameters"]; ok {
 		functionDefinition.inputParameters = strings.Split(inputParameters, ",")
 	} else {
 		functionDefinition.inputParameters = []string{}
 	}
 
-	if outputParameters, ok := attributes["outputParameters"]; ok {
+	if outputParameters, ok := functionDefinition.attributes["outputParameters"]; ok {
 		functionDefinition.outputParameters = strings.Split(outputParameters, ",")
 	} else {
 		functionDefinition.outputParameters = []string{}
@@ -92,7 +92,7 @@ func (functionDefinition *FunctionDefinition) Init(parent *Step, tag string, att
 }
 
 func (functionDefinition *FunctionDefinition) Execute(scope Scope) (bool, error) {
-	fmt.Println("declaring func ", functionDefinition.name, "(", functionDefinition.inputParameters, ")", functionDefinition.outputParameters)
+	// fmt.Println("declaring func ", functionDefinition.name, "(", functionDefinition.inputParameters, ")", functionDefinition.outputParameters)
 	if _, ok := scope.functions[functionDefinition.name]; !ok {
 		scope.functions[functionDefinition.name] = functionDefinition
 	} else {
@@ -117,7 +117,7 @@ func (functionCall *FunctionCall) Init(parent *Step, tag string, attributes map[
 		return functionCall, err
 	}
 
-	if name, ok := attributes["name"]; ok {
+	if name, ok := functionCall.attributes["name"]; ok {
 		functionCall.name = name
 	} else {
 		return nil, fmt.Errorf("name attribute missing")
@@ -140,8 +140,8 @@ func (functionCall *FunctionCall) Execute(scope Scope) (bool, error) {
 				return false, fmt.Errorf("input variable not found in known scope %s", inputParameter)
 			}
 		}
-		fmt.Println("func call", functionCall.name, "(", functionScope.variables, ")")
-		if result, err := RunSteps(functionScope, functionDefinition.NestedSteps...); err != nil {
+		// fmt.Println("func call", functionCall.name, "(", functionScope.variables, ")")
+		if result, err := RunSteps(functionScope, functionDefinition.nestedSteps...); err != nil {
 
 			for _, outputParameter := range functionDefinition.outputParameters {
 

@@ -13,7 +13,7 @@ func InitStepDefinitions() {
 	StepDefMap["return"] = createReturnStep
 	StepDefMap["func"] = createFunctionDefinitionStep
 	StepDefMap["call"] = createFunctionCallStep
-	StepDefMap["genericStep"] = createGenericStep
+	StepDefMap["genericStep"] = createBaseStep
 }
 
 func GetSteps(parent *Step, node *xmldom.Node) ([]Step, error) {
@@ -24,7 +24,7 @@ func GetSteps(parent *Step, node *xmldom.Node) ([]Step, error) {
 				steps = append(steps, step)
 
 				if childsNestedSteps, err := GetSteps(&step, child); err == nil {
-					step.AddSteps(childsNestedSteps...)
+					step.AddNestedSteps(childsNestedSteps...)
 				} else {
 					return steps, err
 				}
