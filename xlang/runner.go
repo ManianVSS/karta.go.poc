@@ -6,18 +6,8 @@ import (
 	"github.com/subchen/go-xmldom"
 )
 
-var StepDefMap map[string]InitStepFunction = map[string]InitStepFunction{}
-
-func InitStepDefinitions() {
-	StepDefMap["echo"] = createEchoStep
-	StepDefMap["return"] = createReturnStep
-	StepDefMap["func"] = createFunctionDefinitionStep
-	StepDefMap["call"] = createFunctionCallStep
-	StepDefMap["genericStep"] = createBaseStep
-}
-
 func GetStepFromNode(parent *Step, node *xmldom.Node) (Step, error) {
-	createStepFunction, ok := StepDefMap[node.Name]
+	createStepFunction, ok := stepDefMap[node.Name]
 	if !ok {
 		createStepFunction = createBaseStep
 	}
@@ -43,7 +33,7 @@ func ExecuteFile(fileName string) error {
 
 	scope := Scope{}
 	scope.variables = map[string]any{}
-	scope.functions = map[string]*FunctionDefinition{}
+	scope.functions = map[string][]Step{}
 
 	rootStep, err := GetStepFromNode(nil, root)
 
@@ -55,10 +45,11 @@ func ExecuteFile(fileName string) error {
 		return fmt.Errorf("unexpected program parsing error; Nil root step")
 	}
 
-	return rootStep.Execute(scope)
+	return rootStep.Execute(&scope)
 }
 
 func Main() {
+	InitVariableTypeDefinitions()
 	InitStepDefinitions()
 	if err := ExecuteFile("sampleapp.xml"); err != nil {
 		fmt.Printf("Program execution error %s\n", err.Error())

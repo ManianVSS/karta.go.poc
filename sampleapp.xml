@@ -1,8 +1,14 @@
-<app> text for app tag <echo message="First message!!">
+<app>
+    <echo message="First message!!">
         text for echo tag
     </echo>
 
+    <var name="myVar1" value="10" type="int" />
+    <echo message="myVar1 is ${myVar1}" />
+
     <func name="MyFunc!!">
+        <var name="myLocalVar1" value="${myVar1}.${myVar1}" type="float" />
+        <echo message="myLocalVar1 is ${myLocalVar1}" />
         <echo attr1="abc" attr2="10"
             message="Nested message is : random is a misnomer.. it is just pseudo random">
             <!-- nested steps inside echo have no use-->
@@ -16,7 +22,10 @@
 
     <echo>
         Echo message a text
-block text
+        block text
     </echo>
-    <call name="MyFunc!!" />
+
+    <call name="MyFunc!!" inputParameters="myVar1" outputParameters="myLocalVar1" />
+
+    <echo message="myLocalVar1 is ${myLocalVar1}" />
 </app>
