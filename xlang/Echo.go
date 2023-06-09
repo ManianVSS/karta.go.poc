@@ -9,11 +9,7 @@ type Echo struct {
 	message string
 }
 
-func (echo *Echo) Init(tag string, attributes map[string]string, text string) error {
-
-	if err := echo.BaseStep.Init(tag, attributes, text); err != nil {
-		return err
-	}
+func (echo *Echo) Initalize() error {
 
 	if message, ok := echo.attributes["message"]; ok {
 		echo.message = message
@@ -28,7 +24,7 @@ func (echo *Echo) Init(tag string, attributes map[string]string, text string) er
 func (echo *Echo) Execute(scope *Scope) error {
 	var parentAttributes map[string]string
 	if echo.parent != nil {
-		parentAttributes = echo.parent.Attributes()
+		parentAttributes = echo.parent.Attributes(nil)
 	}
 	_, err := fmt.Println(replaceVarsInString(echo.message, scope.variables, parentAttributes))
 	return err
@@ -36,5 +32,8 @@ func (echo *Echo) Execute(scope *Scope) error {
 
 func createEchoStep(parent Step, tag string, attributes map[string]string, text string) (Step, error) {
 	echo := &Echo{}
-	return echo, echo.Init(tag, attributes, text)
+	echo.tag = tag
+	echo.attributes = attributes
+	echo.text = text
+	return echo, echo.Initalize()
 }

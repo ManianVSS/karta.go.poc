@@ -9,11 +9,7 @@ type FunctionDefinition struct {
 	name string
 }
 
-func (functionDefinition *FunctionDefinition) Init(tag string, attributes map[string]string, text string) error {
-
-	if err := functionDefinition.BaseStep.Init(tag, attributes, text); err != nil {
-		return err
-	}
+func (functionDefinition *FunctionDefinition) Initalize() error {
 
 	if name, ok := functionDefinition.attributes["name"]; ok {
 		functionDefinition.name = name
@@ -36,5 +32,8 @@ func (functionDefinition *FunctionDefinition) Execute(scope *Scope) error {
 
 func createFunctionDefinitionStep(parent Step, tag string, attributes map[string]string, text string) (Step, error) {
 	functionDefinition := &FunctionDefinition{}
-	return functionDefinition, functionDefinition.Init(tag, attributes, text)
+	functionDefinition.tag = tag
+	functionDefinition.attributes = attributes
+	functionDefinition.text = text
+	return functionDefinition, functionDefinition.Initalize()
 }

@@ -11,11 +11,7 @@ type VariableDefinition struct {
 	varType string
 }
 
-func (variableDefinition *VariableDefinition) Init(tag string, attributes map[string]string, text string) error {
-
-	if err := variableDefinition.BaseStep.Init(tag, attributes, text); err != nil {
-		return err
-	}
+func (variableDefinition *VariableDefinition) Initalize() error {
 
 	if name, ok := variableDefinition.attributes["name"]; ok {
 		variableDefinition.name = name
@@ -42,7 +38,7 @@ func (variableDefinition *VariableDefinition) Execute(scope *Scope) error {
 
 	var parentAttributes map[string]string
 	if variableDefinition.parent != nil {
-		parentAttributes = variableDefinition.parent.Attributes()
+		parentAttributes = variableDefinition.parent.Attributes(nil)
 	}
 
 	strReplacedWithVariables := replaceVarsInString(variableDefinition.value, scope.variables, parentAttributes)
@@ -60,5 +56,8 @@ func (variableDefinition *VariableDefinition) Execute(scope *Scope) error {
 
 func createVariableDefinitionStep(parent Step, tag string, attributes map[string]string, text string) (Step, error) {
 	variableDefinition := &VariableDefinition{}
-	return variableDefinition, variableDefinition.Init(tag, attributes, text)
+	variableDefinition.tag = tag
+	variableDefinition.attributes = attributes
+	variableDefinition.text = text
+	return variableDefinition, variableDefinition.Initalize()
 }

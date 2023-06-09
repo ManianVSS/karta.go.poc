@@ -6,10 +6,21 @@ import (
 )
 
 type Step interface {
+	//Set parent if passed non nil and get the set parent
 	Parent(Step) Step
-	Attributes() map[string]string
-	Init(string, map[string]string, string) error
-	AddNestedSteps(...Step)
+	//Set tag for the step if passed non empty and get the set tag
+	Tag(string) string
+	//Set attributes for the step if passed non nil and get the set attributes
+	Attributes(map[string]string) map[string]string
+	//Set text for the step if passed non empty and get the set text
+	Text(string) string
+
+	//Adds nested steps for the step if passed non empty and get the nested steps
+	AddNestedSteps(...Step) []Step
+
+	//Initialize the step post setting values
+	Initalize() error
+
 	Execute(*Scope) error
 }
 
@@ -91,22 +102,36 @@ func (baseStep *BaseStep) Parent(parent Step) Step {
 	return baseStep.parent
 }
 
-func (baseStep *BaseStep) Attributes() map[string]string {
+func (baseStep *BaseStep) Tag(tag string) string {
+	if tag != "" {
+		baseStep.tag = tag
+	}
+	return baseStep.tag
+}
+
+func (baseStep *BaseStep) Attributes(attributes map[string]string) map[string]string {
+	if attributes != nil {
+		baseStep.attributes = attributes
+	}
 	return baseStep.attributes
 }
-
-func (baseStep *BaseStep) Init(tag string, attributes map[string]string, text string) error {
-	baseStep.tag = tag
-	baseStep.attributes = attributes
-	baseStep.text = text
-	return nil
+func (baseStep *BaseStep) Text(text string) string {
+	if text != "" {
+		baseStep.text = text
+	}
+	return baseStep.text
 }
 
-func (baseStep *BaseStep) AddNestedSteps(steps ...Step) {
+func (baseStep *BaseStep) AddNestedSteps(steps ...Step) []Step {
 	if baseStep.nestedSteps == nil {
 		baseStep.nestedSteps = []Step{}
 	}
 	baseStep.nestedSteps = append(baseStep.nestedSteps, steps...)
+	return baseStep.nestedSteps
+}
+
+func (baseStep *BaseStep) Initalize() error {
+	return nil
 }
 
 func (baseStep *BaseStep) Execute(scope *Scope) error {
@@ -115,5 +140,8 @@ func (baseStep *BaseStep) Execute(scope *Scope) error {
 
 func createBaseStep(parent Step, tag string, attributes map[string]string, text string) (Step, error) {
 	baseStep := &BaseStep{}
-	return baseStep, baseStep.Init(tag, attributes, text)
+	baseStep.tag = tag
+	baseStep.attributes = attributes
+	baseStep.text = text
+	return baseStep, nil
 }

@@ -12,11 +12,7 @@ type CustomStepDefinition struct {
 	textAttribute  string
 }
 
-func (customStepDefinition *CustomStepDefinition) Init(tag string, attributes map[string]string, text string) error {
-
-	if err := customStepDefinition.BaseStep.Init(tag, attributes, text); err != nil {
-		return err
-	}
+func (customStepDefinition *CustomStepDefinition) Initalize() error {
 
 	if name, ok := customStepDefinition.attributes["name"]; ok {
 		customStepDefinition.name = name
@@ -47,9 +43,9 @@ func (customStepDefinition *CustomStepDefinition) Execute(scope *Scope) error {
 				// fmt.Printf("Entering the closure.. Steps to Copy %#v", customStepDefinition.nestedSteps)
 				customStep := &struct{ BaseStep }{}
 				customStep.parent = parent
-				if err := customStep.Init(tag, attributes, text); err != nil {
-					return customStep, err
-				}
+				customStep.tag = tag
+				customStep.attributes = attributes
+				customStep.text = text
 				customStep.nestedSteps = make([]Step, len(customStepDefinition.nestedSteps)) //customStepDefinition.nestedSteps
 				copy(customStep.nestedSteps, customStepDefinition.nestedSteps)
 				for index := range customStep.nestedSteps {
@@ -65,5 +61,8 @@ func (customStepDefinition *CustomStepDefinition) Execute(scope *Scope) error {
 
 func createCustomStepDefinitionStep(parent Step, tag string, attributes map[string]string, text string) (Step, error) {
 	customStepDefinition := &CustomStepDefinition{}
-	return customStepDefinition, customStepDefinition.Init(tag, attributes, text)
+	customStepDefinition.tag = tag
+	customStepDefinition.attributes = attributes
+	customStepDefinition.text = text
+	return customStepDefinition, customStepDefinition.Initalize()
 }

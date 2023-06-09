@@ -12,11 +12,7 @@ type FunctionCall struct {
 	outputParameters []string
 }
 
-func (functionCall *FunctionCall) Init(tag string, attributes map[string]string, text string) error {
-
-	if err := functionCall.BaseStep.Init(tag, attributes, text); err != nil {
-		return err
-	}
+func (functionCall *FunctionCall) Initalize() error {
 
 	if name, ok := functionCall.attributes["name"]; ok {
 		functionCall.name = name
@@ -76,5 +72,8 @@ func (functionCall *FunctionCall) Execute(scope *Scope) error {
 
 func createFunctionCallStep(parent Step, tag string, attributes map[string]string, text string) (Step, error) {
 	functionCall := &FunctionCall{}
-	return functionCall, functionCall.Init(tag, attributes, text)
+	functionCall.tag = tag
+	functionCall.attributes = attributes
+	functionCall.text = text
+	return functionCall, functionCall.Initalize()
 }
