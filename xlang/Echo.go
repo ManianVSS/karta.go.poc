@@ -4,6 +4,10 @@ import (
 	"fmt"
 )
 
+func init() {
+	stepDefMap["var"] = createVariableDefinitionStep
+}
+
 type Echo struct {
 	BaseStep
 	message string
@@ -21,13 +25,13 @@ func (echo *Echo) Initalize() error {
 	return nil
 }
 
-func (echo *Echo) Execute(scope *Scope) error {
+func (echo *Echo) Execute(scope *Scope) (any, error) {
 	var parentAttributes map[string]string
 	if echo.parent != nil {
 		parentAttributes = echo.parent.Attributes(nil)
 	}
-	_, err := fmt.Println(replaceVarsInString(echo.message, scope.variables, parentAttributes))
-	return err
+	byteWrittenCount, err := fmt.Println(replaceVarsInString(echo.message, scope.variables, parentAttributes))
+	return byteWrittenCount > 0, err
 }
 
 func createEchoStep(parent Step, tag string, attributes map[string]string, text string) (Step, error) {

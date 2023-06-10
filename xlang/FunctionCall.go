@@ -5,6 +5,10 @@ import (
 	"strings"
 )
 
+func init() {
+	stepDefMap["call"] = createFunctionCallStep
+}
+
 type FunctionCall struct {
 	BaseStep
 	name             string
@@ -35,7 +39,7 @@ func (functionCall *FunctionCall) Initalize() error {
 	return nil
 }
 
-func (functionCall *FunctionCall) Execute(scope *Scope) error {
+func (functionCall *FunctionCall) Execute(scope *Scope) (any, error) {
 
 	if functionSteps, ok := scope.get_function(functionCall.name); ok {
 		functionScope := Scope{}
@@ -46,27 +50,27 @@ func (functionCall *FunctionCall) Execute(scope *Scope) error {
 			if inputParameterValue, result := scope.get_variable(inputParameter); result {
 				functionScope.variables[inputParameter] = inputParameterValue
 			} else {
-				return fmt.Errorf("input variable not found in known scope %s", inputParameter)
+				return nil, fmt.Errorf("input variable not found in known scope %s", inputParameter)
 			}
 		}
 
-		if err := RunSteps(&functionScope, functionSteps...); err == nil {
+		if results, err := RunSteps(&functionScope, functionSteps...); err == nil {
 
 			for _, outputParameter := range functionCall.outputParameters {
 
 				if outputParameterValue, result := functionScope.get_variable(outputParameter); result {
 					scope.variables[outputParameter] = outputParameterValue
 				} else {
-					return fmt.Errorf("output variable not found in function scope %s", outputParameter)
+					return results, fmt.Errorf("output variable not found in function scope %s", outputParameter)
 				}
 			}
-			return err
+			return results, err
 		} else {
-			return err
+			return results, err
 		}
 
 	} else {
-		return fmt.Errorf("function definitions not present in known scope %s", functionCall.name)
+		return nil, fmt.Errorf("function definitions not present in known scope %s", functionCall.name)
 	}
 }
 

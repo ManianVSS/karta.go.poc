@@ -5,6 +5,10 @@ import (
 	"strings"
 )
 
+func init() {
+	stepDefMap["step"] = createCustomStepDefinitionStep
+}
+
 type CustomStepDefinition struct {
 	BaseStep
 	name           string
@@ -31,7 +35,7 @@ func (customStepDefinition *CustomStepDefinition) Initalize() error {
 	return nil
 }
 
-func (customStepDefinition *CustomStepDefinition) Execute(scope *Scope) error {
+func (customStepDefinition *CustomStepDefinition) Execute(scope *Scope) (any, error) {
 
 	// stepTemplateSteps := make([]Step, len(customStepDefinition.nestedSteps))
 	// copy(stepTemplateSteps, customStepDefinition.nestedSteps)
@@ -54,9 +58,9 @@ func (customStepDefinition *CustomStepDefinition) Execute(scope *Scope) error {
 				return customStep, nil
 			}
 	} else {
-		return fmt.Errorf("step definition already present for name %s", customStepDefinition.name)
+		return nil, fmt.Errorf("step definition already present for name %s", customStepDefinition.name)
 	}
-	return nil
+	return nil, nil
 }
 
 func createCustomStepDefinitionStep(parent Step, tag string, attributes map[string]string, text string) (Step, error) {

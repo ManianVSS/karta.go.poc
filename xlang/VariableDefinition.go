@@ -4,6 +4,10 @@ import (
 	"fmt"
 )
 
+func init() {
+	stepDefMap["echo"] = createEchoStep
+}
+
 type VariableDefinition struct {
 	BaseStep
 	name    string
@@ -34,7 +38,7 @@ func (variableDefinition *VariableDefinition) Initalize() error {
 	return nil
 }
 
-func (variableDefinition *VariableDefinition) Execute(scope *Scope) error {
+func (variableDefinition *VariableDefinition) Execute(scope *Scope) (any, error) {
 
 	var parentAttributes map[string]string
 	if variableDefinition.parent != nil {
@@ -46,12 +50,12 @@ func (variableDefinition *VariableDefinition) Execute(scope *Scope) error {
 		if parsedValue, err := strToVarFunction(strReplacedWithVariables); err == nil {
 			scope.variables[variableDefinition.name] = parsedValue
 		} else {
-			return err
+			return parsedValue, err
 		}
 	} else {
-		return fmt.Errorf("undefined type for value conversion %s", variableDefinition.varType)
+		return variableDefinition.value, fmt.Errorf("undefined type for value conversion %s", variableDefinition.varType)
 	}
-	return nil
+	return variableDefinition.value, nil
 }
 
 func createVariableDefinitionStep(parent Step, tag string, attributes map[string]string, text string) (Step, error) {

@@ -1,5 +1,9 @@
 package xlang
 
+func init() {
+	stepDefMap["return"] = createReturnStep
+}
+
 type MethodReturnError struct {
 }
 
@@ -11,8 +15,8 @@ type ReturnStep struct {
 	BaseStep
 }
 
-func (returnStep *ReturnStep) Execute(scope *Scope) error {
-	return &MethodReturnError{}
+func (returnStep *ReturnStep) Execute(scope *Scope) (any, error) {
+	return nil, &MethodReturnError{}
 }
 
 func createReturnStep(parent Step, tag string, attributes map[string]string, text string) (Step, error) {

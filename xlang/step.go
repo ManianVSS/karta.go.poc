@@ -2,7 +2,6 @@ package xlang
 
 import (
 	"fmt"
-	"strconv"
 )
 
 type Step interface {
@@ -21,7 +20,8 @@ type Step interface {
 	//Initialize the step post setting values
 	Initalize() error
 
-	Execute(*Scope) error
+	//Execute the step in the scope provided and return if any error
+	Execute(*Scope) (any, error)
 }
 
 type InitStepFunction func(Step, string, map[string]string, string) (Step, error)
@@ -37,16 +37,6 @@ func RegisterStepDefinition(tag string, initStepFunction InitStepFunction) error
 	return nil
 }
 
-func InitStepDefinitions() {
-	stepDefMap["echo"] = createEchoStep
-	stepDefMap["var"] = createVariableDefinitionStep
-	stepDefMap["func"] = createFunctionDefinitionStep
-	stepDefMap["call"] = createFunctionCallStep
-	stepDefMap["return"] = createReturnStep
-
-	stepDefMap["step"] = createCustomStepDefinitionStep
-}
-
 type StrToVarFunction func(string) (any, error)
 
 var variableParserFunctionMap map[string]StrToVarFunction = map[string]StrToVarFunction{}
@@ -60,31 +50,27 @@ func RegisterVariableTypeDefinition(varType string, strToVarFunction StrToVarFun
 	return nil
 }
 
-func InitVariableTypeDefinitions() {
-	variableParserFunctionMap["int"] = func(strValue string) (any, error) { return strconv.Atoi(strValue) }
-	variableParserFunctionMap["float"] = func(strValue string) (any, error) { return strconv.ParseFloat(strValue, 64) }
-	variableParserFunctionMap["bool"] = func(strValue string) (any, error) { return strconv.ParseBool(strValue) }
-	variableParserFunctionMap["string"] = func(strValue string) (any, error) { return strValue, nil }
-}
+func RunSteps(scope *Scope, steps ...Step) (any, error) {
 
-func RunSteps(scope *Scope, steps ...Step) error {
-	for _, step := range steps {
+	results := make([]any, len(steps))
+	for i, step := range steps {
 		if step != nil {
-			err := step.Execute(scope)
+			result, err := step.Execute(scope)
 			if err != nil {
 				if _, ok := err.(*MethodReturnError); ok {
+					results[i] = result
 					// fmt.Printf("Encountered return %t, %s\n", err, err.Error())
 					break
 				} else {
 					fmt.Printf("Program execution error while executing step %t with error %s\n", step, err.Error())
 				}
-				return err
+				return results, err
 			}
 		} else {
-			return fmt.Errorf("encountered an unexpected condition where step is nil")
+			return results, fmt.Errorf("encountered an unexpected condition where step is nil")
 		}
 	}
-	return nil
+	return results, nil
 }
 
 type BaseStep struct {
@@ -134,7 +120,7 @@ func (baseStep *BaseStep) Initalize() error {
 	return nil
 }
 
-func (baseStep *BaseStep) Execute(scope *Scope) error {
+func (baseStep *BaseStep) Execute(scope *Scope) (any, error) {
 	return RunSteps(scope, baseStep.nestedSteps...)
 }
 

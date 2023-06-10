@@ -29,7 +29,7 @@ func GetStepFromNode(parent Step, node *xmldom.Node) (Step, error) {
 	}
 }
 
-func ExecuteFile(fileName string) error {
+func ExecuteFile(fileName string) (any, error) {
 	doc := xmldom.Must(xmldom.ParseFile(fileName))
 	root := doc.Root
 
@@ -43,27 +43,28 @@ func ExecuteFile(fileName string) error {
 		text:       root.Text,
 	}
 
-	for _, mainStepNode := range root.Children {
+	overallResult := make([]any, len(root.Children))
+	for i, mainStepNode := range root.Children {
 		if mainStep, err := GetStepFromNode(&rootStep, mainStepNode); err == nil {
-
 			if mainStep == nil {
-				return fmt.Errorf("unexpected program parsing error; Nil root step")
+				return overallResult, fmt.Errorf("unexpected program parsing error; Nil root step")
 			}
-
-			if err := mainStep.Execute(&scope); err != nil {
-				return err
+			result, err := mainStep.Execute(&scope)
+			overallResult[i] = result
+			if err != nil {
+				return overallResult, err
 			}
 		} else {
-			return err
+			return overallResult, err
 		}
 	}
-	return nil
+	return overallResult, nil
 }
 
 func Main() {
-	InitVariableTypeDefinitions()
-	InitStepDefinitions()
-	if err := ExecuteFile("sampleapp.xml"); err != nil {
+	if result, err := ExecuteFile("sampleapp.xml"); err == nil {
+		fmt.Printf("Program exited with results %#v\n", result)
+	} else {
 		fmt.Printf("Program execution error %s\n", err.Error())
 	}
 }
