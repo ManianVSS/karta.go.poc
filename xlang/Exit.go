@@ -11,14 +11,14 @@ func init() {
 
 type Exit struct {
 	BaseStep
-	errorCode int
+	code int
 }
 
 func (exit *Exit) Initalize() error {
 
-	if errorCodeStr, ok := exit.attributes["exitCode"]; ok {
+	if errorCodeStr, ok := exit.attributes["code"]; ok {
 		var err error
-		exit.errorCode, err = strconv.Atoi(errorCodeStr)
+		exit.code, err = strconv.Atoi(errorCodeStr)
 		if err != nil {
 			return err
 		}
@@ -28,12 +28,12 @@ func (exit *Exit) Initalize() error {
 }
 
 func (exit *Exit) Execute(scope *Scope) (any, error) {
-	os.Exit(exit.errorCode)
-	return exit.errorCode, nil
+	os.Exit(exit.code)
+	return exit.code, nil
 }
 
 func createExitStep(parent Step, tag string, attributes map[string]string, text string) (Step, error) {
-	exit := &Echo{}
+	exit := &Exit{}
 	exit.tag = tag
 	exit.attributes = attributes
 	exit.text = text
