@@ -37,5 +37,5 @@
     <customTag name="#{user}" message1="user2_msg1" message2="user2_msg2" />
     <!-- <exit code="10"/> -->
 
-    <equals lhs="${myLocalVar1}" rhs="010.1000" type="float"/>
+    <compare lhs="${myLocalVar1}" rhs="010.1000" type="float"/>
 </app>

@@ -45,7 +45,7 @@ func (customStepDefinition *CustomStepDefinition) Execute(scope *Scope, basedir 
 		stepDefMap[customStepDefinition.name] =
 			func(parent Step, tag string, attributes map[string]string, text string) (Step, error) {
 				// fmt.Printf("Entering the closure.. Steps to Copy %#v", customStepDefinition.nestedSteps)
-				customStep := &struct{ BaseStep }{}
+				customStep := &BaseStep{}
 				customStep.parent = parent
 				customStep.tag = tag
 				customStep.attributes = attributes

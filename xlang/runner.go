@@ -37,11 +37,11 @@ func GetStepBaseForNode(parent Step, node *xmldom.Node) (Step, error) {
 func GetStepForNode(parent Step, node *xmldom.Node) (Step, error) {
 	step, err := GetStepBaseForNode(parent, node)
 	if err == nil {
-		for _, child := range node.Children {
-			if childsNestedStep, err := GetStepForNode(step, child); err == nil {
-				step.AddNestedSteps(childsNestedStep)
-			}
-		}
+		// for _, child := range node.Children {
+		// 	if childsNestedStep, err := GetStepForNode(step, child); err == nil {
+		// 		step.AddNestedSteps(childsNestedStep)
+		// 	}
+		// }
 		GetStepChildrenForNode(step, node.Children)
 	}
 	return step, err
