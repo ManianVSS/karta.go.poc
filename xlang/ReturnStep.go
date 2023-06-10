@@ -15,7 +15,7 @@ type ReturnStep struct {
 	BaseStep
 }
 
-func (returnStep *ReturnStep) Execute(scope *Scope) (any, error) {
+func (returnStep *ReturnStep) Execute(scope *Scope, basedir string) (any, error) {
 	return nil, &MethodReturnError{}
 }
 

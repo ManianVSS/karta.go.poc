@@ -24,7 +24,7 @@ func (functionDefinition *FunctionDefinition) Initalize() error {
 	return nil
 }
 
-func (functionDefinition *FunctionDefinition) Execute(scope *Scope) (any, error) {
+func (functionDefinition *FunctionDefinition) Execute(scope *Scope, basedir string) (any, error) {
 
 	if _, ok := scope.functions[functionDefinition.name]; !ok {
 		scope.functions[functionDefinition.name] = functionDefinition.nestedSteps

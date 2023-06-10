@@ -1,4 +1,5 @@
 <app appAttr1="appVal1">
+    <import file="helloworld.xml" />
     <echo message="First message: @{appAttr1}!!">
         text for echo tag
     </echo>
@@ -30,12 +31,9 @@
     <echo message="myLocalVar1 is ${myLocalVar1}" />
 
 
-    <step name="customTag">
-        <echo message="[@{name}]: @{message1}" />
-        <echo message="[@{name}]: @{message2}" />
-    </step>
+    <import file="customtask.xml" />
 
     <customTag name="user1" message1="user1_msg1" message2="user1_msg2" />
     <customTag name="user2" message1="user2_msg1" message2="user2_msg2" />
-    <exit code="10"/>
+    <!-- <exit code="10"/> -->
 </app>

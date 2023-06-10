@@ -35,7 +35,7 @@ func (customStepDefinition *CustomStepDefinition) Initalize() error {
 	return nil
 }
 
-func (customStepDefinition *CustomStepDefinition) Execute(scope *Scope) (any, error) {
+func (customStepDefinition *CustomStepDefinition) Execute(scope *Scope, basedir string) (any, error) {
 
 	// stepTemplateSteps := make([]Step, len(customStepDefinition.nestedSteps))
 	// copy(stepTemplateSteps, customStepDefinition.nestedSteps)

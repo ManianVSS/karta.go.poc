@@ -1,0 +1,4 @@
+<step name="customTag">
+    <echo message="[@{name}]: @{message1}" />
+    <echo message="[@{name}]: @{message2}" />
+</step>

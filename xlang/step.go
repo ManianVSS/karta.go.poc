@@ -21,7 +21,7 @@ type Step interface {
 	Initalize() error
 
 	//Execute the step in the scope provided and return if any error
-	Execute(*Scope) (any, error)
+	Execute(*Scope, string) (any, error)
 }
 
 type InitStepFunction func(Step, string, map[string]string, string) (Step, error)
@@ -50,12 +50,12 @@ func RegisterVariableTypeDefinition(varType string, strToVarFunction StrToVarFun
 	return nil
 }
 
-func RunSteps(scope *Scope, steps ...Step) (any, error) {
+func RunSteps(scope *Scope, basedir string, steps ...Step) (any, error) {
 
 	results := make([]any, len(steps))
 	for i, step := range steps {
 		if step != nil {
-			result, err := step.Execute(scope)
+			result, err := step.Execute(scope, basedir)
 			if err != nil {
 				if _, ok := err.(*MethodReturnError); ok {
 					results[i] = result
@@ -120,8 +120,8 @@ func (baseStep *BaseStep) Initalize() error {
 	return nil
 }
 
-func (baseStep *BaseStep) Execute(scope *Scope) (any, error) {
-	return RunSteps(scope, baseStep.nestedSteps...)
+func (baseStep *BaseStep) Execute(scope *Scope, basedir string) (any, error) {
+	return RunSteps(scope, basedir, baseStep.nestedSteps...)
 }
 
 func createBaseStep(parent Step, tag string, attributes map[string]string, text string) (Step, error) {

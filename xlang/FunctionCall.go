@@ -39,7 +39,7 @@ func (functionCall *FunctionCall) Initalize() error {
 	return nil
 }
 
-func (functionCall *FunctionCall) Execute(scope *Scope) (any, error) {
+func (functionCall *FunctionCall) Execute(scope *Scope, basedir string) (any, error) {
 
 	if functionSteps, ok := scope.get_function(functionCall.name); ok {
 		functionScope := Scope{}
@@ -54,7 +54,7 @@ func (functionCall *FunctionCall) Execute(scope *Scope) (any, error) {
 			}
 		}
 
-		if results, err := RunSteps(&functionScope, functionSteps...); err == nil {
+		if results, err := RunSteps(&functionScope, basedir, functionSteps...); err == nil {
 
 			for _, outputParameter := range functionCall.outputParameters {
 

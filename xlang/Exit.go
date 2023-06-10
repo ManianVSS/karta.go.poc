@@ -27,7 +27,7 @@ func (exit *Exit) Initalize() error {
 	return nil
 }
 
-func (exit *Exit) Execute(scope *Scope) (any, error) {
+func (exit *Exit) Execute(scope *Scope, basedir string) (any, error) {
 	os.Exit(exit.code)
 	return exit.code, nil
 }

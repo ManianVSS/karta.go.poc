@@ -25,7 +25,7 @@ func (echo *Echo) Initalize() error {
 	return nil
 }
 
-func (echo *Echo) Execute(scope *Scope) (any, error) {
+func (echo *Echo) Execute(scope *Scope, basedir string) (any, error) {
 	var parentAttributes map[string]string
 	if echo.parent != nil {
 		parentAttributes = echo.parent.Attributes(nil)

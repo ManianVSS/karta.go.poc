@@ -38,7 +38,7 @@ func (variableDefinition *VariableDefinition) Initalize() error {
 	return nil
 }
 
-func (variableDefinition *VariableDefinition) Execute(scope *Scope) (any, error) {
+func (variableDefinition *VariableDefinition) Execute(scope *Scope, basedir string) (any, error) {
 
 	var parentAttributes map[string]string
 	if variableDefinition.parent != nil {
