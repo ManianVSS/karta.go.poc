@@ -16,16 +16,22 @@ func init() {
 	binaryFunctionMap["and"] = LogicalAndFunction
 	binaryFunctionMap["or"] = LogicalOrFunction
 
+	binaryFunctionMap["+"] = AddFunction
+	binaryFunctionMap["-"] = SubtractFunction
+	binaryFunctionMap["*"] = MultiplyFunction
+	binaryFunctionMap["/"] = DivideFunction
+
 	stepDefMap["compare"] = createBinaryOperationStep
 	stepDefMap["binaryoperation"] = createBinaryOperationStep
 }
 
 type BinaryOperation struct {
 	BaseStep
-	lhs      string
-	operator string
-	rhs      string
-	varType  string
+	lhs       string
+	operator  string
+	rhs       string
+	varType   string
+	resultVar string
 }
 
 func (compare *BinaryOperation) Initalize() error {
@@ -59,6 +65,12 @@ func (compare *BinaryOperation) Initalize() error {
 		compare.varType = "string"
 	}
 
+	if resultVar, ok := compare.attributes["resultVar"]; ok {
+		compare.resultVar = resultVar
+	} else {
+		compare.resultVar = ""
+	}
+
 	return nil
 }
 
@@ -73,7 +85,12 @@ func (compare *BinaryOperation) Execute(scope *Scope, basedir string) (any, erro
 		if strToVarFunction, ok := variableParserFunctionMap[compare.varType]; ok {
 			if lhsvalue, err := strToVarFunction(replaceVarsInString(compare.lhs, scope.variables, parentAttributes)); err == nil {
 				if rhsvalue, err := strToVarFunction(replaceVarsInString(compare.rhs, scope.variables, parentAttributes)); err == nil {
-					return operatorFunction(lhsvalue, rhsvalue)
+
+					operationResult, err := operatorFunction(lhsvalue, rhsvalue)
+					if (err == nil) && (compare.resultVar != "") {
+						scope.variables[compare.resultVar] = operationResult
+					}
+					return operationResult, err
 				} else {
 					return false, err
 				}

@@ -131,4 +131,66 @@ func LogicalOrFunction(lhs, rhs any) (any, error) {
 	}
 }
 
+func AddFunction(lhs, rhs any) (any, error) {
+	switch varType := lhs.(type) {
+	case byte:
+		return lhs.(byte) + rhs.(byte), nil
+	case int:
+		return lhs.(int) + rhs.(int), nil
+	case float64:
+		return lhs.(float64) + rhs.(float64), nil
+	case float32:
+		return lhs.(float32) + rhs.(float32), nil
+	case string:
+		return lhs.(string) + rhs.(string), nil
+	default:
+		return false, fmt.Errorf("comparision not implemented for type %v", varType)
+	}
+}
+
+func SubtractFunction(lhs, rhs any) (any, error) {
+	switch varType := lhs.(type) {
+	case byte:
+		return lhs.(byte) - rhs.(byte), nil
+	case int:
+		return lhs.(int) - rhs.(int), nil
+	case float64:
+		return lhs.(float64) - rhs.(float64), nil
+	case float32:
+		return lhs.(float32) - rhs.(float32), nil
+	default:
+		return false, fmt.Errorf("comparision not implemented for type %v", varType)
+	}
+}
+
+func MultiplyFunction(lhs, rhs any) (any, error) {
+	switch varType := lhs.(type) {
+	case byte:
+		return lhs.(byte) * rhs.(byte), nil
+	case int:
+		return lhs.(int) * rhs.(int), nil
+	case float64:
+		return lhs.(float64) * rhs.(float64), nil
+	case float32:
+		return lhs.(float32) * rhs.(float32), nil
+	default:
+		return false, fmt.Errorf("comparision not implemented for type %v", varType)
+	}
+}
+
+func DivideFunction(lhs, rhs any) (any, error) {
+	switch varType := lhs.(type) {
+	case byte:
+		return lhs.(byte) / rhs.(byte), nil
+	case int:
+		return lhs.(int) / rhs.(int), nil
+	case float64:
+		return lhs.(float64) / rhs.(float64), nil
+	case float32:
+		return lhs.(float32) / rhs.(float32), nil
+	default:
+		return false, fmt.Errorf("comparision not implemented for type %v", varType)
+	}
+}
+
 //TODO can we merge type parsing and comparision registration

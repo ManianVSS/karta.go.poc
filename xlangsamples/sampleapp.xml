@@ -37,5 +37,9 @@
     <customTag name="#{user}" message1="user2_msg1" message2="user2_msg2" />
     <!-- <exit code="10"/> -->
 
-    <compare lhs="${myLocalVar1}" rhs="010.1000" type="float"/>
+    <compare lhs="${myLocalVar1}" rhs="010.1000" type="float" resultVar="myComparisonResult" />
+    <echo message="Comparision result is ${myComparisonResult}" />
+    <binaryoperation operator="+" lhs="10" rhs="${myLocalVar1}" type="float"
+        resultVar="mybiopresult" />
+    <echo message="Binary operation result is ${mybiopresult}" />
 </app>
