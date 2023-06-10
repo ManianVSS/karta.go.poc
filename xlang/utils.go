@@ -4,6 +4,8 @@ import (
 	"bytes"
 	"encoding/gob"
 	"fmt"
+	"os"
+	"regexp"
 	"strings"
 
 	"github.com/subchen/go-xmldom"
@@ -17,8 +19,14 @@ func xmlAttrToAttributes(xmlAttributes []*xmldom.Attribute) map[string]string {
 	return attributesMap
 }
 
-func replaceVariableInString(stringToProcess string, variableName string, variableValue any) string {
-	return strings.Replace(stringToProcess, "${"+variableName+"}", fmt.Sprintf("%v", variableValue), -1)
+func replaceVariableInString(stringToProcess string, variableIdenfyingSymbol string, variableName string, variableValue string, caseInsensitive bool) string {
+	toReplace := variableIdenfyingSymbol + "{" + variableName + "}"
+	if caseInsensitive {
+		re := regexp.MustCompile("(?i)" + toReplace)
+		return re.ReplaceAllString(stringToProcess, variableValue)
+	} else {
+		return strings.Replace(stringToProcess, toReplace, variableValue, -1)
+	}
 }
 
 func replaceVarsInString(str string, variables map[string]any, xmlparentattributes map[string]string) string {
@@ -27,7 +35,7 @@ func replaceVarsInString(str string, variables map[string]any, xmlparentattribut
 	for {
 		var replacement bool = false
 		for key, value := range variables {
-			newString := replaceVariableInString(processedString, key, value)
+			newString := replaceVariableInString(processedString, "$", key, fmt.Sprintf("%v", value), false)
 
 			if processedString != newString {
 				processedString = newString
@@ -36,11 +44,23 @@ func replaceVarsInString(str string, variables map[string]any, xmlparentattribut
 		}
 
 		for key, value := range xmlparentattributes {
-			newString := strings.Replace(processedString, "@{"+key+"}", value, -1)
+			newString := replaceVariableInString(processedString, "@", key, value, false) //strings.Replace(processedString, "@{"+key+"}", value, -1)
 
 			if processedString != newString {
 				processedString = newString
 				replacement = true
+			}
+		}
+
+		for _, envString := range os.Environ() {
+			kvp := strings.SplitN(envString, "=", 2)
+			if len(kvp) == 2 {
+				newString := replaceVariableInString(processedString, "#", kvp[0], kvp[1], true) //strings.Replace(processedString, "#{"+kvp[0]+"}", kvp[1], -1)
+
+				if processedString != newString {
+					processedString = newString
+					replacement = true
+				}
 			}
 		}
 		if !replacement {

@@ -5,7 +5,7 @@ import (
 )
 
 func init() {
-	stepDefMap["echo"] = createEchoStep
+	stepDefMap["var"] = createVariableDefinitionStep
 }
 
 type VariableDefinition struct {

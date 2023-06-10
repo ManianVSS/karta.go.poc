@@ -54,8 +54,6 @@ func ExecuteFile(scope *Scope, fileName string) (any, error) {
 	if scope == nil {
 		return nil, fmt.Errorf("scope was not provided to run the file")
 	}
-	scope.variables = map[string]any{}
-	scope.functions = map[string][]Step{}
 
 	basedir := filepath.Dir(fileName)
 
