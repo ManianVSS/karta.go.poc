@@ -33,10 +33,10 @@ type ElseStatement struct {
 
 func (ifStatement *IfStatement) Initalize() error {
 
-	stepCount := len(ifStatement.nestedSteps)
+	stepCount, err := checkAtleastNStep(ifStatement.BaseStep, 2)
 
-	if stepCount < 2 {
-		return fmt.Errorf("%s's block needs atleast 2 steps one condition and a then block", ifStatement.tag)
+	if err != nil {
+		return err
 	}
 
 	ifStatement.conditionStep = ifStatement.nestedSteps[0]
@@ -124,10 +124,8 @@ func createThenStatementStep(parent Step, tag string, attributes map[string]stri
 
 func (elseIfStatement *ElseIfStatement) Initalize() error {
 
-	stepCount := len(elseIfStatement.nestedSteps)
-
-	if stepCount != 2 {
-		return fmt.Errorf("%s's block needs exactly 2 steps one condition and a then block", elseIfStatement.tag)
+	if _, err := checkOnlyNStep(elseIfStatement.BaseStep, 2); err != nil {
+		return err
 	}
 
 	elseIfStatement.conditionStep = elseIfStatement.nestedSteps[0]

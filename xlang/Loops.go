@@ -31,10 +31,8 @@ type LoopDoStatement struct {
 
 func (forStatement *ForStatement) Initalize() error {
 
-	stepCount := len(forStatement.nestedSteps)
-
-	if stepCount != 4 {
-		return fmt.Errorf("%s's block needs exactly 4 steps init block, condition, update block and do block", forStatement.tag)
+	if _, err := checkAtleastNStep(forStatement.BaseStep, 4); err != nil {
+		return err
 	}
 
 	initBlock := forStatement.nestedSteps[0]

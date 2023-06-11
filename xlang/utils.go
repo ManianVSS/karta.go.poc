@@ -103,6 +103,34 @@ func ToBool(value any) bool {
 	}
 }
 
+func checkAtleastNStep(step BaseStep, expectedStepsCount int) (int, error) {
+	stepCount := 0
+
+	if step.nestedSteps != nil {
+		stepCount = len(step.nestedSteps)
+	}
+
+	if stepCount < expectedStepsCount {
+		return stepCount, fmt.Errorf("%s's block needs atleast %d condition", step.tag, expectedStepsCount)
+	}
+
+	return stepCount, nil
+}
+
+func checkOnlyNStep(step BaseStep, expectedStepsCount int) (int, error) {
+	stepCount := 0
+
+	if step.nestedSteps != nil {
+		stepCount = len(step.nestedSteps)
+	}
+
+	if stepCount != expectedStepsCount {
+		return stepCount, fmt.Errorf("%s's block needs only %d step", step.tag, expectedStepsCount)
+	}
+
+	return stepCount, nil
+}
+
 // func CopyStep(anyValue Step) Step {
 // 	v := reflect.ValueOf(anyValue).Elem()
 // 	return reflect.New(v.Type())
