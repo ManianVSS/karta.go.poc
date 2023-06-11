@@ -37,5 +37,5 @@ func createExitStep(parent Step, tag string, attributes map[string]string, text 
 	exit.tag = tag
 	exit.attributes = attributes
 	exit.text = text
-	return exit, exit.Initalize()
+	return exit, nil
 }

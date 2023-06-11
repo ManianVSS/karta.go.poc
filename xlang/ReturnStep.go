@@ -24,5 +24,5 @@ func createReturnStep(parent Step, tag string, attributes map[string]string, tex
 	returnStep.tag = tag
 	returnStep.attributes = attributes
 	returnStep.text = text
-	return returnStep, returnStep.Initalize()
+	return returnStep, nil
 }

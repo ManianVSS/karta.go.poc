@@ -45,7 +45,7 @@ func (variableDefinition *VariableDefinition) Execute(scope *Scope, basedir stri
 		parentAttributes = variableDefinition.parent.Attributes(nil)
 	}
 
-	strReplacedWithVariables := replaceVarsInString(variableDefinition.value, scope.variables, parentAttributes)
+	strReplacedWithVariables := replaceVarsInString(variableDefinition.value, scope, parentAttributes)
 	if strToVarFunction, ok := variableParserFunctionMap[variableDefinition.varType]; ok {
 		if parsedValue, err := strToVarFunction(strReplacedWithVariables); err == nil {
 			scope.variables[variableDefinition.name] = parsedValue
@@ -63,5 +63,5 @@ func createVariableDefinitionStep(parent Step, tag string, attributes map[string
 	variableDefinition.tag = tag
 	variableDefinition.attributes = attributes
 	variableDefinition.text = text
-	return variableDefinition, variableDefinition.Initalize()
+	return variableDefinition, nil
 }

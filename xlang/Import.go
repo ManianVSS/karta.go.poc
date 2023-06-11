@@ -32,5 +32,5 @@ func createImportStep(parent Step, tag string, attributes map[string]string, tex
 	importStep.tag = tag
 	importStep.attributes = attributes
 	importStep.text = text
-	return importStep, importStep.Initalize()
+	return importStep, nil
 }

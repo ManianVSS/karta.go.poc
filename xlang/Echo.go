@@ -30,7 +30,7 @@ func (echo *Echo) Execute(scope *Scope, basedir string) (any, error) {
 	if echo.parent != nil {
 		parentAttributes = echo.parent.Attributes(nil)
 	}
-	byteWrittenCount, err := fmt.Println(replaceVarsInString(echo.message, scope.variables, parentAttributes))
+	byteWrittenCount, err := fmt.Println(replaceVarsInString(echo.message, scope, parentAttributes))
 	return byteWrittenCount > 0, err
 }
 
@@ -39,5 +39,5 @@ func createEchoStep(parent Step, tag string, attributes map[string]string, text 
 	echo.tag = tag
 	echo.attributes = attributes
 	echo.text = text
-	return echo, echo.Initalize()
+	return echo, nil
 }

@@ -98,37 +98,11 @@ func LesserThanOrEqualsFunction(lhs, rhs any) (any, error) {
 }
 
 func LogicalAndFunction(lhs, rhs any) (any, error) {
-	switch varType := lhs.(type) {
-	case bool:
-		return lhs.(bool) && rhs.(bool), nil
-	case int:
-		return (lhs.(int) != 0) && (rhs.(int) != 0), nil
-	case float64:
-		return (lhs.(float64) != 0) && (rhs.(float64) != 0), nil
-	case float32:
-		return (lhs.(float32) != 0) && (rhs.(float32) != 0), nil
-	case string:
-		return (lhs.(string) != "") && (rhs.(string) != ""), nil
-	default:
-		return false, fmt.Errorf("comparision not implemented for type %v", varType)
-	}
+	return ToBool(lhs) && ToBool(rhs), nil
 }
 
 func LogicalOrFunction(lhs, rhs any) (any, error) {
-	switch varType := lhs.(type) {
-	case bool:
-		return lhs.(bool) || rhs.(bool), nil
-	case int:
-		return (lhs.(int) != 0) || (rhs.(int) != 0), nil
-	case float64:
-		return (lhs.(float64) != 0) || (rhs.(float64) != 0), nil
-	case float32:
-		return (lhs.(float32) != 0) || (rhs.(float32) != 0), nil
-	case string:
-		return (lhs.(string) != "") || (rhs.(string) != ""), nil
-	default:
-		return false, fmt.Errorf("comparision not implemented for type %v", varType)
-	}
+	return ToBool(lhs) || ToBool(rhs), nil
 }
 
 func AddFunction(lhs, rhs any) (any, error) {

@@ -41,13 +41,13 @@ func (functionCall *FunctionCall) Initalize() error {
 
 func (functionCall *FunctionCall) Execute(scope *Scope, basedir string) (any, error) {
 
-	if functionSteps, ok := scope.get_function(functionCall.name); ok {
+	if functionSteps, ok := scope.getFunction(functionCall.name); ok {
 		functionScope := Scope{}
 		functionScope.variables = map[string]any{}
 		functionScope.functions = map[string][]Step{}
 
 		for _, inputParameter := range functionCall.inputParameters {
-			if inputParameterValue, result := scope.get_variable(inputParameter); result {
+			if inputParameterValue, result := scope.getVariable(inputParameter); result {
 				functionScope.variables[inputParameter] = inputParameterValue
 			} else {
 				return nil, fmt.Errorf("input variable not found in known scope %s", inputParameter)
@@ -58,7 +58,7 @@ func (functionCall *FunctionCall) Execute(scope *Scope, basedir string) (any, er
 
 			for _, outputParameter := range functionCall.outputParameters {
 
-				if outputParameterValue, result := functionScope.get_variable(outputParameter); result {
+				if outputParameterValue, result := functionScope.getVariable(outputParameter); result {
 					scope.variables[outputParameter] = outputParameterValue
 				} else {
 					return results, fmt.Errorf("output variable not found in function scope %s", outputParameter)
@@ -79,5 +79,5 @@ func createFunctionCallStep(parent Step, tag string, attributes map[string]strin
 	functionCall.tag = tag
 	functionCall.attributes = attributes
 	functionCall.text = text
-	return functionCall, functionCall.Initalize()
+	return functionCall, nil
 }

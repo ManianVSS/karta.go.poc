@@ -39,5 +39,5 @@ func createFunctionDefinitionStep(parent Step, tag string, attributes map[string
 	functionDefinition.tag = tag
 	functionDefinition.attributes = attributes
 	functionDefinition.text = text
-	return functionDefinition, functionDefinition.Initalize()
+	return functionDefinition, nil
 }

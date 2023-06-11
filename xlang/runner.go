@@ -11,12 +11,15 @@ func init() {
 	stepDefMap["app"] = createBaseStep
 }
 
-func GetStepChildrenForNode(parent Step, nodeChildren []*xmldom.Node) {
+func GetStepChildrenForNode(parent Step, nodeChildren []*xmldom.Node) error {
 	for _, childNode := range nodeChildren {
 		if childStep, err := GetStepForNode(parent, childNode); err == nil {
 			parent.AddNestedSteps(childStep)
+		} else {
+			return err
 		}
 	}
+	return nil
 }
 
 func GetStepBaseForNode(parent Step, node *xmldom.Node) (Step, error) {
@@ -35,16 +38,14 @@ func GetStepBaseForNode(parent Step, node *xmldom.Node) (Step, error) {
 }
 
 func GetStepForNode(parent Step, node *xmldom.Node) (Step, error) {
-	step, err := GetStepBaseForNode(parent, node)
-	if err == nil {
-		// for _, child := range node.Children {
-		// 	if childsNestedStep, err := GetStepForNode(step, child); err == nil {
-		// 		step.AddNestedSteps(childsNestedStep)
-		// 	}
-		// }
-		GetStepChildrenForNode(step, node.Children)
+	if step, err := GetStepBaseForNode(parent, node); err == nil {
+		if err := GetStepChildrenForNode(step, node.Children); err != nil {
+			return step, err
+		}
+		return step, step.Initalize()
+	} else {
+		return step, err
 	}
-	return step, err
 }
 
 func ExecuteFile(scope *Scope, fileName string) (any, error) {

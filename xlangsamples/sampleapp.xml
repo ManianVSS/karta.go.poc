@@ -42,4 +42,32 @@
     <binaryoperation operator="+" lhs="10" rhs="${myLocalVar1}" type="float"
         resultVar="mybiopresult" />
     <echo message="Binary operation result is ${mybiopresult}" />
+
+    <if>
+        <compare lhs="${myLocalVar1}" rhs="10" type="float" resultVar="myComparisonResult" />
+        <then>
+            <echo message="Then block myLocalVar1 value is 10" />
+        </then>
+        <elseif>
+            <compare lhs="${mybiopresult}" rhs="20" type="float" resultVar="myComparisonResult" />
+            <then>
+                <echo message="Else if 1 Then block myLocalVar1 value is 20" />
+            </then>
+        </elseif>
+        <elseif>
+            <compare lhs="${mybiopresult}" rhs="20.2" type="float" resultVar="myComparisonResult" />
+            <then>
+                <echo message="Else if 2 Then block myLocalVar1 value is 20.2" />
+            </then>
+        </elseif>
+        <else>
+            <echo message="Else block" />
+            <if>
+                <compare lhs="${myLocalVar1}" rhs="10.1" type="float" resultVar="myComparisonResult" />
+                <then>
+                    <echo message="Then block myLocalVar1 value is 10.1" />
+                </then>
+            </if>
+        </else>
+    </if>
 </app>

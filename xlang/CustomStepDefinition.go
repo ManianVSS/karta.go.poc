@@ -68,5 +68,5 @@ func createCustomStepDefinitionStep(parent Step, tag string, attributes map[stri
 	customStepDefinition.tag = tag
 	customStepDefinition.attributes = attributes
 	customStepDefinition.text = text
-	return customStepDefinition, customStepDefinition.Initalize()
+	return customStepDefinition, nil
 }

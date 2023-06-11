@@ -29,22 +29,28 @@ func replaceVariableInString(stringToProcess string, variableIdenfyingSymbol str
 	}
 }
 
-func replaceVarsInString(str string, variables map[string]any, xmlparentattributes map[string]string) string {
+func replaceVarsInString(str string, scope *Scope, xmlparentattributes map[string]string) string {
 	processedString := str
 
 	for {
-		var replacement bool = false
-		for key, value := range variables {
-			newString := replaceVariableInString(processedString, "$", key, fmt.Sprintf("%v", value), false)
 
-			if processedString != newString {
-				processedString = newString
-				replacement = true
+		var replacement bool = false
+
+		if scope != nil {
+			variableNames := scope.getVariableNames()
+			for _, key := range variableNames {
+				if scopeVariable, ok := scope.getVariable(key); ok {
+					newString := replaceVariableInString(processedString, "$", key, fmt.Sprintf("%v", scopeVariable), false)
+					if processedString != newString {
+						processedString = newString
+						replacement = true
+					}
+				}
 			}
 		}
 
 		for key, value := range xmlparentattributes {
-			newString := replaceVariableInString(processedString, "@", key, value, false) //strings.Replace(processedString, "@{"+key+"}", value, -1)
+			newString := replaceVariableInString(processedString, "@", key, value, false)
 
 			if processedString != newString {
 				processedString = newString
@@ -55,7 +61,7 @@ func replaceVarsInString(str string, variables map[string]any, xmlparentattribut
 		for _, envString := range os.Environ() {
 			kvp := strings.SplitN(envString, "=", 2)
 			if len(kvp) == 2 {
-				newString := replaceVariableInString(processedString, "#", kvp[0], kvp[1], true) //strings.Replace(processedString, "#{"+kvp[0]+"}", kvp[1], -1)
+				newString := replaceVariableInString(processedString, "#", kvp[0], kvp[1], true)
 
 				if processedString != newString {
 					processedString = newString
@@ -77,6 +83,24 @@ func DeepCopy(src, dest interface{}) (err error) {
 		return
 	}
 	return gob.NewDecoder(&buf).Decode(dest)
+}
+
+func ToBool(value any) bool {
+	switch varType := value.(type) {
+	case bool:
+		return value.(bool)
+	case int:
+		return (value.(int) != 0)
+	case float64:
+		return (value.(float64) != 0)
+	case float32:
+		return (value.(float32) != 0)
+	case string:
+		return (value.(string) != "")
+	default:
+		_ = varType
+		return value != nil
+	}
 }
 
 // func CopyStep(anyValue Step) Step {

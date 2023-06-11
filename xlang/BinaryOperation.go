@@ -83,8 +83,8 @@ func (compare *BinaryOperation) Execute(scope *Scope, basedir string) (any, erro
 
 	if operatorFunction, ok := binaryFunctionMap[compare.operator]; ok {
 		if strToVarFunction, ok := variableParserFunctionMap[compare.varType]; ok {
-			if lhsvalue, err := strToVarFunction(replaceVarsInString(compare.lhs, scope.variables, parentAttributes)); err == nil {
-				if rhsvalue, err := strToVarFunction(replaceVarsInString(compare.rhs, scope.variables, parentAttributes)); err == nil {
+			if lhsvalue, err := strToVarFunction(replaceVarsInString(compare.lhs, scope, parentAttributes)); err == nil {
+				if rhsvalue, err := strToVarFunction(replaceVarsInString(compare.rhs, scope, parentAttributes)); err == nil {
 
 					operationResult, err := operatorFunction(lhsvalue, rhsvalue)
 					if (err == nil) && (compare.resultVar != "") {
@@ -110,5 +110,5 @@ func createBinaryOperationStep(parent Step, tag string, attributes map[string]st
 	binaryOperation.tag = tag
 	binaryOperation.attributes = attributes
 	binaryOperation.text = text
-	return binaryOperation, binaryOperation.Initalize()
+	return binaryOperation, nil
 }
