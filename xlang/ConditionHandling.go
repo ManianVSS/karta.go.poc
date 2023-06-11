@@ -12,9 +12,9 @@ func init() {
 type IfStatement struct {
 	BaseStep
 	conditionStep Step
-	thenBlock     Step
-	elseIfBlocks  []Step
-	elseBlock     Step
+	thenBlock     *ThenStatement
+	elseIfBlocks  []*ElseIfStatement
+	elseBlock     *ElseStatement
 }
 
 type ThenStatement struct {
@@ -47,7 +47,7 @@ func (ifStatement *IfStatement) Initalize() error {
 		return fmt.Errorf("%s's second step needs to be a then block", ifStatement.tag)
 	}
 
-	ifStatement.thenBlock = thenBlock
+	ifStatement.thenBlock = thenBlock.(*ThenStatement)
 
 	if stepCount > 2 {
 		lastIndex := stepCount - 1
@@ -58,15 +58,16 @@ func (ifStatement *IfStatement) Initalize() error {
 				if elseIfBlock.Tag("") != "elseif" {
 					return fmt.Errorf("%s's step numbered %d needs to be a elseif block", ifStatement.tag, i)
 				}
+				ifStatement.elseIfBlocks = append(ifStatement.elseIfBlocks, ifStatement.nestedSteps[i].(*ElseIfStatement))
 			}
-			ifStatement.elseIfBlocks = ifStatement.nestedSteps[2:lastIndex]
+			// ifStatement.elseIfBlocks = ifStatement.nestedSteps[2:lastIndex]
 		}
 
 		elseBlock := ifStatement.nestedSteps[lastIndex]
 		if elseBlock.Tag("") != "else" {
 			return fmt.Errorf("%s's last step needs to be an else block", ifStatement.tag)
 		}
-		ifStatement.elseBlock = elseBlock
+		ifStatement.elseBlock = elseBlock.(*ElseStatement)
 
 	}
 	return nil

@@ -70,4 +70,18 @@
             </if>
         </else>
     </if>
+
+    <for>
+        <init>
+            <var name="myIterVar" value="10" type="int" />
+        </init>
+        <compare operator="!=" lhs="${myIterVar}" rhs="20" type="int" />
+        <update>
+            <binaryoperation operator="+" lhs="${myIterVar}" rhs="1" type="int"
+                resultVar="myIterVar" />
+        </update>
+        <do>
+            <echo message="${myIterVar}" />
+        </do>
+    </for>
 </app>
