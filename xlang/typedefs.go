@@ -12,7 +12,13 @@ func init() {
 	variableParserFunctionMap["string"] = func(strValue string) (any, error) { return strValue, nil }
 }
 
+type ParseFunction func(string) (any, error)
+type ToStringFunction func(any) (string, error)
+type UnaryBooleanFunction func(any) (bool, error)
+
+type UnaryFunction func(lhs any) (any, error)
 type BinaryFunction func(lhs any, rhs any) (any, error)
+type BinaryBooleanFunction func(lhs any, rhs any) (bool, error)
 
 var binaryFunctionMap map[string]BinaryFunction = map[string]BinaryFunction{}
 
@@ -32,15 +38,15 @@ func NotEqualsFunction(lhs, rhs any) (any, error) { return lhs != rhs, nil }
 func GreaterThanFunction(lhs, rhs any) (any, error) {
 	switch varType := lhs.(type) {
 	case byte:
-		return lhs.(byte) < rhs.(byte), nil
+		return lhs.(byte) > rhs.(byte), nil
 	case int:
-		return lhs.(int) < rhs.(int), nil
+		return lhs.(int) > rhs.(int), nil
 	case float64:
-		return lhs.(float64) < rhs.(float64), nil
+		return lhs.(float64) > rhs.(float64), nil
 	case float32:
-		return lhs.(float32) < rhs.(float32), nil
+		return lhs.(float32) > rhs.(float32), nil
 	case string:
-		return lhs.(string) < rhs.(string), nil
+		return lhs.(string) > rhs.(string), nil
 	default:
 		return false, fmt.Errorf("comparision not implemented for type %v", varType)
 	}
@@ -49,15 +55,15 @@ func GreaterThanFunction(lhs, rhs any) (any, error) {
 func GreaterThanOrEqualsFunction(lhs, rhs any) (any, error) {
 	switch varType := lhs.(type) {
 	case byte:
-		return lhs.(byte) <= rhs.(byte), nil
+		return lhs.(byte) >= rhs.(byte), nil
 	case int:
-		return lhs.(int) <= rhs.(int), nil
+		return lhs.(int) >= rhs.(int), nil
 	case float64:
-		return lhs.(float64) <= rhs.(float64), nil
+		return lhs.(float64) >= rhs.(float64), nil
 	case float32:
-		return lhs.(float32) <= rhs.(float32), nil
+		return lhs.(float32) >= rhs.(float32), nil
 	case string:
-		return lhs.(string) <= rhs.(string), nil
+		return lhs.(string) >= rhs.(string), nil
 	default:
 		return false, fmt.Errorf("comparision not implemented for type %v", varType)
 	}
