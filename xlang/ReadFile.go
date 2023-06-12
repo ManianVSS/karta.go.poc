@@ -2,7 +2,7 @@ package xlang
 
 import (
 	"fmt"
-	"io/ioutil"
+	"os"
 )
 
 func init() {
@@ -37,7 +37,7 @@ func (readFileStep *ReadFileStep) Execute(scope *Scope, basedir string) (any, er
 		return nil, err
 	}
 
-	byteValue, err := ioutil.ReadFile(readFileStep.fileName)
+	byteValue, err := os.ReadFile(readFileStep.fileName)
 
 	if err != nil {
 		return nil, err

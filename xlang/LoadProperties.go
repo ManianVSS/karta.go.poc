@@ -3,7 +3,7 @@ package xlang
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"os"
 )
 
@@ -38,7 +38,7 @@ func (loadPropertiesStep *LoadPropertiesStep) Execute(scope *Scope, basedir stri
 	}
 	defer jsonFile.Close()
 
-	byteValue, err := ioutil.ReadAll(jsonFile)
+	byteValue, err := io.ReadAll(jsonFile)
 
 	if err != nil {
 		return nil, err
