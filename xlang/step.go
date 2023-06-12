@@ -13,12 +13,8 @@ type Step interface {
 	Attributes(map[string]string) map[string]string
 	//Set text for the step if passed non empty and get the set text
 	Text(string) string
-
 	//Adds nested steps for the step if passed non empty and get the nested steps
-	AddNestedSteps(...Step) []Step
-
-	//Initialize the step post setting values
-	Initalize() error
+	NestedSteps(...Step) []Step
 
 	//Execute the step in the scope provided and return if any error
 	Execute(*Scope, string) (any, error)
@@ -108,7 +104,7 @@ func (baseStep *BaseStep) Text(text string) string {
 	return baseStep.text
 }
 
-func (baseStep *BaseStep) AddNestedSteps(steps ...Step) []Step {
+func (baseStep *BaseStep) NestedSteps(steps ...Step) []Step {
 	if baseStep.nestedSteps == nil {
 		baseStep.nestedSteps = []Step{}
 	}
@@ -116,11 +112,16 @@ func (baseStep *BaseStep) AddNestedSteps(steps ...Step) []Step {
 	return baseStep.nestedSteps
 }
 
-func (baseStep *BaseStep) Initalize() error {
+func (baseStep *BaseStep) InitalizeAndCheck() error {
 	return nil
 }
 
 func (baseStep *BaseStep) Execute(scope *Scope, basedir string) (any, error) {
+
+	if err := baseStep.InitalizeAndCheck(); err != nil {
+		return nil, err
+	}
+
 	return RunSteps(scope, basedir, baseStep.nestedSteps...)
 }
 

@@ -16,7 +16,7 @@ type LoadPropertiesStep struct {
 	fileName string
 }
 
-func (loadPropertiesStep *LoadPropertiesStep) Initalize() error {
+func (loadPropertiesStep *LoadPropertiesStep) InitalizeAndCheck() error {
 
 	if file, ok := loadPropertiesStep.attributes["file"]; ok {
 		loadPropertiesStep.fileName = file
@@ -27,6 +27,10 @@ func (loadPropertiesStep *LoadPropertiesStep) Initalize() error {
 }
 
 func (loadPropertiesStep *LoadPropertiesStep) Execute(scope *Scope, basedir string) (any, error) {
+
+	if err := loadPropertiesStep.InitalizeAndCheck(); err != nil {
+		return nil, err
+	}
 
 	jsonFile, err := os.Open(loadPropertiesStep.fileName)
 	if err != nil {

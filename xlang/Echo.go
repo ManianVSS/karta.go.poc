@@ -13,7 +13,7 @@ type Echo struct {
 	message string
 }
 
-func (echo *Echo) Initalize() error {
+func (echo *Echo) InitalizeAndCheck() error {
 
 	if message, ok := echo.attributes["message"]; ok {
 		echo.message = message
@@ -26,6 +26,11 @@ func (echo *Echo) Initalize() error {
 }
 
 func (echo *Echo) Execute(scope *Scope, basedir string) (any, error) {
+
+	if err := echo.InitalizeAndCheck(); err != nil {
+		return nil, err
+	}
+
 	var parentAttributes map[string]string
 	if echo.parent != nil {
 		parentAttributes = echo.parent.Attributes(nil)

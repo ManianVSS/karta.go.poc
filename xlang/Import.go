@@ -13,7 +13,7 @@ type ImportStep struct {
 	fileName string
 }
 
-func (importStep *ImportStep) Initalize() error {
+func (importStep *ImportStep) InitalizeAndCheck() error {
 
 	if file, ok := importStep.attributes["file"]; ok {
 		importStep.fileName = file
@@ -24,6 +24,11 @@ func (importStep *ImportStep) Initalize() error {
 }
 
 func (importStep *ImportStep) Execute(scope *Scope, basedir string) (any, error) {
+
+	if err := importStep.InitalizeAndCheck(); err != nil {
+		return nil, err
+	}
+
 	return ExecuteFile(scope, basedir+"/"+importStep.fileName)
 }
 

@@ -16,7 +16,7 @@ type CustomStepDefinition struct {
 	textAttribute  string
 }
 
-func (customStepDefinition *CustomStepDefinition) Initalize() error {
+func (customStepDefinition *CustomStepDefinition) InitalizeAndCheck() error {
 
 	if name, ok := customStepDefinition.attributes["name"]; ok {
 		customStepDefinition.name = name
@@ -36,6 +36,10 @@ func (customStepDefinition *CustomStepDefinition) Initalize() error {
 }
 
 func (customStepDefinition *CustomStepDefinition) Execute(scope *Scope, basedir string) (any, error) {
+
+	if err := customStepDefinition.InitalizeAndCheck(); err != nil {
+		return nil, err
+	}
 
 	// stepTemplateSteps := make([]Step, len(customStepDefinition.nestedSteps))
 	// copy(stepTemplateSteps, customStepDefinition.nestedSteps)

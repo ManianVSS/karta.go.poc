@@ -31,7 +31,7 @@ type ElseStatement struct {
 	BaseStep
 }
 
-func (ifStatement *IfStatement) Initalize() error {
+func (ifStatement *IfStatement) InitalizeAndCheck() error {
 
 	stepCount, err := checkAtleastNStep(ifStatement.BaseStep, 2)
 
@@ -74,6 +74,11 @@ func (ifStatement *IfStatement) Initalize() error {
 }
 
 func (ifstatement *IfStatement) Execute(scope *Scope, basedir string) (any, error) {
+
+	if err := ifstatement.InitalizeAndCheck(); err != nil {
+		return nil, err
+	}
+
 	ifScope := Scope{}
 	ifScope.variables = map[string]any{}
 	ifScope.functions = map[string][]Step{}
@@ -122,7 +127,7 @@ func createThenStatementStep(parent Step, tag string, attributes map[string]stri
 	return thenStatement, nil
 }
 
-func (elseIfStatement *ElseIfStatement) Initalize() error {
+func (elseIfStatement *ElseIfStatement) InitalizeAndCheck() error {
 
 	if _, err := checkOnlyNStep(elseIfStatement.BaseStep, 2); err != nil {
 		return err
@@ -142,6 +147,11 @@ func (elseIfStatement *ElseIfStatement) Initalize() error {
 }
 
 func (elseIfstatement *ElseIfStatement) Execute(scope *Scope, basedir string) (any, error) {
+
+	if err := elseIfstatement.InitalizeAndCheck(); err != nil {
+		return nil, err
+	}
+
 	if result, err := elseIfstatement.conditionStep.Execute(scope, basedir); err == nil {
 		if ToBool(result) {
 			return elseIfstatement.thenBlock.Execute(scope, basedir)

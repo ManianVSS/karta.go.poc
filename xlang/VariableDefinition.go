@@ -15,7 +15,7 @@ type VariableDefinition struct {
 	varType string
 }
 
-func (variableDefinition *VariableDefinition) Initalize() error {
+func (variableDefinition *VariableDefinition) InitalizeAndCheck() error {
 
 	if name, ok := variableDefinition.attributes["name"]; ok {
 		variableDefinition.name = name
@@ -39,6 +39,10 @@ func (variableDefinition *VariableDefinition) Initalize() error {
 }
 
 func (variableDefinition *VariableDefinition) Execute(scope *Scope, basedir string) (any, error) {
+
+	if err := variableDefinition.InitalizeAndCheck(); err != nil {
+		return nil, err
+	}
 
 	var parentAttributes map[string]string
 	if variableDefinition.parent != nil {

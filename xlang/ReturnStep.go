@@ -16,6 +16,11 @@ type ReturnStep struct {
 }
 
 func (returnStep *ReturnStep) Execute(scope *Scope, basedir string) (any, error) {
+
+	if err := returnStep.InitalizeAndCheck(); err != nil {
+		return nil, err
+	}
+
 	return nil, &MethodReturnError{}
 }
 

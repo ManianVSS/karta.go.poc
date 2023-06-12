@@ -15,7 +15,7 @@ type ReadFileStep struct {
 	resultVar string
 }
 
-func (readFileStep *ReadFileStep) Initalize() error {
+func (readFileStep *ReadFileStep) InitalizeAndCheck() error {
 
 	if file, ok := readFileStep.attributes["file"]; ok {
 		readFileStep.fileName = file
@@ -32,6 +32,10 @@ func (readFileStep *ReadFileStep) Initalize() error {
 }
 
 func (readFileStep *ReadFileStep) Execute(scope *Scope, basedir string) (any, error) {
+
+	if err := readFileStep.InitalizeAndCheck(); err != nil {
+		return nil, err
+	}
 
 	byteValue, err := ioutil.ReadFile(readFileStep.fileName)
 

@@ -18,12 +18,17 @@ type NotStatement struct {
 	BaseStep
 }
 
-func (andStatement *AndStatement) Initalize() error {
+func (andStatement *AndStatement) InitalizeAndCheck() error {
 	_, error := checkAtleastNStep(andStatement.BaseStep, 2)
 	return error
 }
 
 func (andStatement *AndStatement) Execute(scope *Scope, basedir string) (any, error) {
+
+	if err := andStatement.InitalizeAndCheck(); err != nil {
+		return nil, err
+	}
+
 	for _, stepTobeAnded := range andStatement.nestedSteps {
 		if result, err := stepTobeAnded.Execute(scope, basedir); err == nil {
 			if !ToBool(result) {
@@ -44,12 +49,17 @@ func createAndStatementStep(parent Step, tag string, attributes map[string]strin
 	return andStatement, nil
 }
 
-func (orStatement *OrStatement) Initalize() error {
+func (orStatement *OrStatement) InitalizeAndCheck() error {
 	_, error := checkAtleastNStep(orStatement.BaseStep, 2)
 	return error
 }
 
 func (orStatement *OrStatement) Execute(scope *Scope, basedir string) (any, error) {
+
+	if err := orStatement.InitalizeAndCheck(); err != nil {
+		return nil, err
+	}
+
 	for _, stepTobeOred := range orStatement.nestedSteps {
 		if result, err := stepTobeOred.Execute(scope, basedir); err == nil {
 			if ToBool(result) {
@@ -70,12 +80,16 @@ func createOrStatementStep(parent Step, tag string, attributes map[string]string
 	return orStatement, nil
 }
 
-func (notStatement *NotStatement) Initalize() error {
+func (notStatement *NotStatement) InitalizeAndCheck() error {
 	_, error := checkOnlyNStep(notStatement.BaseStep, 1)
 	return error
 }
 
 func (notStatement *NotStatement) Execute(scope *Scope, basedir string) (any, error) {
+
+	if err := notStatement.InitalizeAndCheck(); err != nil {
+		return nil, err
+	}
 
 	if result, err := notStatement.nestedSteps[0].Execute(scope, basedir); err == nil {
 		return !ToBool(result), nil

@@ -29,7 +29,7 @@ type LoopDoStatement struct {
 	BaseStep
 }
 
-func (forStatement *ForStatement) Initalize() error {
+func (forStatement *ForStatement) InitalizeAndCheck() error {
 
 	if _, err := checkAtleastNStep(forStatement.BaseStep, 4); err != nil {
 		return err
@@ -65,6 +65,11 @@ func (forStatement *ForStatement) Initalize() error {
 }
 
 func (forStatement *ForStatement) Execute(scope *Scope, basedir string) (any, error) {
+
+	if err := forStatement.InitalizeAndCheck(); err != nil {
+		return nil, err
+	}
+
 	forScope := Scope{}
 	forScope.variables = map[string]any{}
 	forScope.functions = map[string][]Step{}

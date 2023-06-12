@@ -14,7 +14,7 @@ type Exit struct {
 	code int
 }
 
-func (exit *Exit) Initalize() error {
+func (exit *Exit) InitalizeAndCheck() error {
 
 	if errorCodeStr, ok := exit.attributes["code"]; ok {
 		var err error
@@ -28,6 +28,11 @@ func (exit *Exit) Initalize() error {
 }
 
 func (exit *Exit) Execute(scope *Scope, basedir string) (any, error) {
+
+	if err := exit.InitalizeAndCheck(); err != nil {
+		return nil, err
+	}
+
 	os.Exit(exit.code)
 	return exit.code, nil
 }

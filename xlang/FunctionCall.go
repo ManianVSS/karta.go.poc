@@ -16,7 +16,7 @@ type FunctionCall struct {
 	outputParameters []string
 }
 
-func (functionCall *FunctionCall) Initalize() error {
+func (functionCall *FunctionCall) InitalizeAndCheck() error {
 
 	if name, ok := functionCall.attributes["name"]; ok {
 		functionCall.name = name
@@ -40,6 +40,10 @@ func (functionCall *FunctionCall) Initalize() error {
 }
 
 func (functionCall *FunctionCall) Execute(scope *Scope, basedir string) (any, error) {
+
+	if err := functionCall.InitalizeAndCheck(); err != nil {
+		return nil, err
+	}
 
 	if functionSteps, ok := scope.getFunction(functionCall.name); ok {
 		functionScope := Scope{}

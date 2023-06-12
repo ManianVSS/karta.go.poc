@@ -13,7 +13,7 @@ type FunctionDefinition struct {
 	name string
 }
 
-func (functionDefinition *FunctionDefinition) Initalize() error {
+func (functionDefinition *FunctionDefinition) InitalizeAndCheck() error {
 
 	if name, ok := functionDefinition.attributes["name"]; ok {
 		functionDefinition.name = name
@@ -25,6 +25,10 @@ func (functionDefinition *FunctionDefinition) Initalize() error {
 }
 
 func (functionDefinition *FunctionDefinition) Execute(scope *Scope, basedir string) (any, error) {
+
+	if err := functionDefinition.InitalizeAndCheck(); err != nil {
+		return nil, err
+	}
 
 	if _, ok := scope.functions[functionDefinition.name]; !ok {
 		scope.functions[functionDefinition.name] = functionDefinition.nestedSteps

@@ -34,7 +34,7 @@ type BinaryOperation struct {
 	resultVar string
 }
 
-func (compare *BinaryOperation) Initalize() error {
+func (compare *BinaryOperation) InitalizeAndCheck() error {
 
 	if lhs, ok := compare.attributes["lhs"]; ok {
 		compare.lhs = lhs
@@ -75,6 +75,10 @@ func (compare *BinaryOperation) Initalize() error {
 }
 
 func (compare *BinaryOperation) Execute(scope *Scope, basedir string) (any, error) {
+
+	if err := compare.InitalizeAndCheck(); err != nil {
+		return nil, err
+	}
 
 	var parentAttributes map[string]string
 	if compare.parent != nil {
