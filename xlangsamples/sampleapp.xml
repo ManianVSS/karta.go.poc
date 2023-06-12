@@ -91,4 +91,7 @@
             <echo message="${myIterVar}" />
         </do>
     </for>
+
+    <loadProperties file="xlangsamples/properties.json"/>
+    <readFile file= "xlangsamples/helloworld.xml" resultVar="helloWorldXMLStringData"/>
 </app>

@@ -1,0 +1,14 @@
+{
+    "prop1": 10,
+    "prop2": true,
+    "prop3": "strValue",
+    "prop4": [
+        "array",
+        "value"
+    ],
+    "prop5": {
+        "this": "is",
+        "a": "json",
+        "object": true
+    }
+}
