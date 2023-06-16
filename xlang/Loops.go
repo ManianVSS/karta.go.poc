@@ -37,7 +37,7 @@ func (forStatement *ForStatement) InitalizeAndCheck() error {
 
 	initBlock := forStatement.nestedSteps[0]
 
-	if initBlock.Tag("") != "init" {
+	if initBlock.Name() != "init" {
 		return fmt.Errorf("%s's first step needs to be a init block", forStatement.tag)
 	}
 
@@ -47,7 +47,7 @@ func (forStatement *ForStatement) InitalizeAndCheck() error {
 
 	updateBlock := forStatement.nestedSteps[2]
 
-	if updateBlock.Tag("") != "update" {
+	if updateBlock.Name() != "update" {
 		return fmt.Errorf("%s's first step needs to be a init block", forStatement.tag)
 	}
 
@@ -55,7 +55,7 @@ func (forStatement *ForStatement) InitalizeAndCheck() error {
 
 	doBlock := forStatement.nestedSteps[3]
 
-	if doBlock.Tag("") != "do" {
+	if doBlock.Name() != "do" {
 		return fmt.Errorf("%s's first step needs to be a init block", forStatement.tag)
 	}
 

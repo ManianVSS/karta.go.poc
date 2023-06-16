@@ -82,7 +82,7 @@ func (compare *BinaryOperation) Execute(scope *Scope, basedir string) (any, erro
 
 	var parentAttributes map[string]string
 	if compare.parent != nil {
-		parentAttributes = compare.parent.Attributes(nil)
+		parentAttributes = compare.parent.Parameters()
 	}
 
 	if operatorFunction, ok := binaryFunctionMap[compare.operator]; ok {

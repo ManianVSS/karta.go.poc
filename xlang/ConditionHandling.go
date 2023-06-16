@@ -43,7 +43,7 @@ func (ifStatement *IfStatement) InitalizeAndCheck() error {
 
 	thenBlock := ifStatement.nestedSteps[1]
 
-	if thenBlock.Tag("") != "then" {
+	if thenBlock.Name() != "then" {
 		return fmt.Errorf("%s's second step needs to be a then block", ifStatement.tag)
 	}
 
@@ -55,7 +55,7 @@ func (ifStatement *IfStatement) InitalizeAndCheck() error {
 		if stepCount > 3 {
 			for i := 2; i < lastIndex; i++ {
 				elseIfBlock := ifStatement.nestedSteps[i]
-				if elseIfBlock.Tag("") != "elseif" {
+				if elseIfBlock.Name() != "elseif" {
 					return fmt.Errorf("%s's step numbered %d needs to be a elseif block", ifStatement.tag, i)
 				}
 				ifStatement.elseIfBlocks = append(ifStatement.elseIfBlocks, ifStatement.nestedSteps[i].(*ElseIfStatement))
@@ -64,7 +64,7 @@ func (ifStatement *IfStatement) InitalizeAndCheck() error {
 		}
 
 		elseBlock := ifStatement.nestedSteps[lastIndex]
-		if elseBlock.Tag("") != "else" {
+		if elseBlock.Name() != "else" {
 			return fmt.Errorf("%s's last step needs to be an else block", ifStatement.tag)
 		}
 		ifStatement.elseBlock = elseBlock.(*ElseStatement)
@@ -137,7 +137,7 @@ func (elseIfStatement *ElseIfStatement) InitalizeAndCheck() error {
 
 	thenBlock := elseIfStatement.nestedSteps[1]
 
-	if thenBlock.Tag("") != "then" {
+	if thenBlock.Name() != "then" {
 		return fmt.Errorf("%s's second step needs to be a then block", elseIfStatement.tag)
 	}
 

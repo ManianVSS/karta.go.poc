@@ -33,7 +33,7 @@ func (echo *Echo) Execute(scope *Scope, basedir string) (any, error) {
 
 	var parentAttributes map[string]string
 	if echo.parent != nil {
-		parentAttributes = echo.parent.Attributes(nil)
+		parentAttributes = echo.parent.Parameters()
 	}
 	byteWrittenCount, err := fmt.Println(replaceVarsInString(echo.message, scope, parentAttributes))
 	return byteWrittenCount > 0, err

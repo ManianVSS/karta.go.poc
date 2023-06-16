@@ -46,7 +46,7 @@ func (variableDefinition *VariableDefinition) Execute(scope *Scope, basedir stri
 
 	var parentAttributes map[string]string
 	if variableDefinition.parent != nil {
-		parentAttributes = variableDefinition.parent.Attributes(nil)
+		parentAttributes = variableDefinition.parent.Parameters()
 	}
 
 	strReplacedWithVariables := replaceVarsInString(variableDefinition.value, scope, parentAttributes)

@@ -14,7 +14,7 @@ func init() {
 func GetStepChildrenForNode(parent Step, nodeChildren []*xmldom.Node) error {
 	for _, childNode := range nodeChildren {
 		if childStep, err := GetStepForNode(parent, childNode); err == nil {
-			parent.NestedSteps(childStep)
+			parent.Steps(childStep)
 		} else {
 			return err
 		}

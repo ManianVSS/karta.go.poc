@@ -8,13 +8,13 @@ type Step interface {
 	//Set parent if passed non nil and get the set parent
 	Parent(Step) Step
 	//Set tag for the step if passed non empty and get the set tag
-	Tag(string) string
+	Name() string
 	//Set attributes for the step if passed non nil and get the set attributes
-	Attributes(map[string]string) map[string]string
+	Parameters() map[string]string
 	//Set text for the step if passed non empty and get the set text
-	Text(string) string
+	Body() string
 	//Adds nested steps for the step if passed non empty and get the nested steps
-	NestedSteps(...Step) []Step
+	Steps(...Step) []Step
 
 	//Execute the step in the scope provided and return if any error
 	Execute(*Scope, string) (any, error)
@@ -84,27 +84,19 @@ func (baseStep *BaseStep) Parent(parent Step) Step {
 	return baseStep.parent
 }
 
-func (baseStep *BaseStep) Tag(tag string) string {
-	if tag != "" {
-		baseStep.tag = tag
-	}
+func (baseStep *BaseStep) Name() string {
 	return baseStep.tag
 }
 
-func (baseStep *BaseStep) Attributes(attributes map[string]string) map[string]string {
-	if attributes != nil {
-		baseStep.attributes = attributes
-	}
+func (baseStep *BaseStep) Parameters() map[string]string {
 	return baseStep.attributes
 }
-func (baseStep *BaseStep) Text(text string) string {
-	if text != "" {
-		baseStep.text = text
-	}
+
+func (baseStep *BaseStep) Body() string {
 	return baseStep.text
 }
 
-func (baseStep *BaseStep) NestedSteps(steps ...Step) []Step {
+func (baseStep *BaseStep) Steps(steps ...Step) []Step {
 	if baseStep.nestedSteps == nil {
 		baseStep.nestedSteps = []Step{}
 	}
