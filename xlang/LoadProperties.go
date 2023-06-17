@@ -53,7 +53,7 @@ func (loadPropertiesStep *LoadPropertiesStep) Execute(scope *Scope, basedir stri
 	return result, nil
 }
 
-func createLoadPropertiesStep(parent Step, tag string, attributes map[string]string, text string) (Step, error) {
+func createLoadPropertiesStep(tag string, attributes map[string]string, text string) (Step, error) {
 	loadPropertiesStep := &LoadPropertiesStep{}
 	loadPropertiesStep.tag = tag
 	loadPropertiesStep.attributes = attributes

@@ -78,7 +78,7 @@ func (functionCall *FunctionCall) Execute(scope *Scope, basedir string) (any, er
 	}
 }
 
-func createFunctionCallStep(parent Step, tag string, attributes map[string]string, text string) (Step, error) {
+func createFunctionCallStep(tag string, attributes map[string]string, text string) (Step, error) {
 	functionCall := &FunctionCall{}
 	functionCall.tag = tag
 	functionCall.attributes = attributes

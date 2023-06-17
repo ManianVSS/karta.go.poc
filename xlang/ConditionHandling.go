@@ -111,7 +111,7 @@ func (ifstatement *IfStatement) Execute(scope *Scope, basedir string) (any, erro
 	return false, nil
 }
 
-func createIfStatementStep(parent Step, tag string, attributes map[string]string, text string) (Step, error) {
+func createIfStatementStep(tag string, attributes map[string]string, text string) (Step, error) {
 	ifStatement := &IfStatement{}
 	ifStatement.tag = tag
 	ifStatement.attributes = attributes
@@ -119,7 +119,7 @@ func createIfStatementStep(parent Step, tag string, attributes map[string]string
 	return ifStatement, nil
 }
 
-func createThenStatementStep(parent Step, tag string, attributes map[string]string, text string) (Step, error) {
+func createThenStatementStep(tag string, attributes map[string]string, text string) (Step, error) {
 	thenStatement := &ThenStatement{}
 	thenStatement.tag = tag
 	thenStatement.attributes = attributes
@@ -163,7 +163,7 @@ func (elseIfstatement *ElseIfStatement) Execute(scope *Scope, basedir string) (a
 	return false, nil
 }
 
-func createElseIfStatementStep(parent Step, tag string, attributes map[string]string, text string) (Step, error) {
+func createElseIfStatementStep(tag string, attributes map[string]string, text string) (Step, error) {
 	elseIfStatement := &ElseIfStatement{}
 	elseIfStatement.tag = tag
 	elseIfStatement.attributes = attributes
@@ -171,7 +171,7 @@ func createElseIfStatementStep(parent Step, tag string, attributes map[string]st
 	return elseIfStatement, nil
 }
 
-func createElseStatementStep(parent Step, tag string, attributes map[string]string, text string) (Step, error) {
+func createElseStatementStep(tag string, attributes map[string]string, text string) (Step, error) {
 	elseStatement := &ElseStatement{}
 	elseStatement.tag = tag
 	elseStatement.attributes = attributes

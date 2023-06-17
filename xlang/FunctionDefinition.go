@@ -38,7 +38,7 @@ func (functionDefinition *FunctionDefinition) Execute(scope *Scope, basedir stri
 	return nil, nil
 }
 
-func createFunctionDefinitionStep(parent Step, tag string, attributes map[string]string, text string) (Step, error) {
+func createFunctionDefinitionStep(tag string, attributes map[string]string, text string) (Step, error) {
 	functionDefinition := &FunctionDefinition{}
 	functionDefinition.tag = tag
 	functionDefinition.attributes = attributes

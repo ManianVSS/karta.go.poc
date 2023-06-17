@@ -51,7 +51,7 @@ func (readFileStep *ReadFileStep) Execute(scope *Scope, basedir string) (any, er
 	return stringValue, nil
 }
 
-func createReadFileStep(parent Step, tag string, attributes map[string]string, text string) (Step, error) {
+func createReadFileStep(tag string, attributes map[string]string, text string) (Step, error) {
 	readFileStep := &ReadFileStep{}
 	readFileStep.tag = tag
 	readFileStep.attributes = attributes

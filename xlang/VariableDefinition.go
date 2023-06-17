@@ -62,7 +62,7 @@ func (variableDefinition *VariableDefinition) Execute(scope *Scope, basedir stri
 	return variableDefinition.value, nil
 }
 
-func createVariableDefinitionStep(parent Step, tag string, attributes map[string]string, text string) (Step, error) {
+func createVariableDefinitionStep(tag string, attributes map[string]string, text string) (Step, error) {
 	variableDefinition := &VariableDefinition{}
 	variableDefinition.tag = tag
 	variableDefinition.attributes = attributes

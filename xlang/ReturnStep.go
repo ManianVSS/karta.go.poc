@@ -24,7 +24,7 @@ func (returnStep *ReturnStep) Execute(scope *Scope, basedir string) (any, error)
 	return nil, &MethodReturnError{}
 }
 
-func createReturnStep(parent Step, tag string, attributes map[string]string, text string) (Step, error) {
+func createReturnStep(tag string, attributes map[string]string, text string) (Step, error) {
 	returnStep := &ReturnStep{}
 	returnStep.tag = tag
 	returnStep.attributes = attributes

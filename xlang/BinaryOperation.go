@@ -109,7 +109,7 @@ func (compare *BinaryOperation) Execute(scope *Scope, basedir string) (any, erro
 	}
 }
 
-func createBinaryOperationStep(parent Step, tag string, attributes map[string]string, text string) (Step, error) {
+func createBinaryOperationStep(tag string, attributes map[string]string, text string) (Step, error) {
 	binaryOperation := &BinaryOperation{}
 	binaryOperation.tag = tag
 	binaryOperation.attributes = attributes

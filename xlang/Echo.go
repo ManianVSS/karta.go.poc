@@ -39,7 +39,7 @@ func (echo *Echo) Execute(scope *Scope, basedir string) (any, error) {
 	return byteWrittenCount > 0, err
 }
 
-func createEchoStep(parent Step, tag string, attributes map[string]string, text string) (Step, error) {
+func createEchoStep(tag string, attributes map[string]string, text string) (Step, error) {
 	echo := &Echo{}
 	echo.tag = tag
 	echo.attributes = attributes

@@ -99,7 +99,7 @@ func (forStatement *ForStatement) Execute(scope *Scope, basedir string) (any, er
 	return atleastOneIteration, nil
 }
 
-func createForStatementStep(parent Step, tag string, attributes map[string]string, text string) (Step, error) {
+func createForStatementStep(tag string, attributes map[string]string, text string) (Step, error) {
 	forStatement := &ForStatement{}
 	forStatement.tag = tag
 	forStatement.attributes = attributes
@@ -107,7 +107,7 @@ func createForStatementStep(parent Step, tag string, attributes map[string]strin
 	return forStatement, nil
 }
 
-func createLoopInitStatementStep(parent Step, tag string, attributes map[string]string, text string) (Step, error) {
+func createLoopInitStatementStep(tag string, attributes map[string]string, text string) (Step, error) {
 	loopInitStatement := &LoopInitStatement{}
 	loopInitStatement.tag = tag
 	loopInitStatement.attributes = attributes
@@ -115,7 +115,7 @@ func createLoopInitStatementStep(parent Step, tag string, attributes map[string]
 	return loopInitStatement, nil
 }
 
-func createLoopUpdateStatementStep(parent Step, tag string, attributes map[string]string, text string) (Step, error) {
+func createLoopUpdateStatementStep(tag string, attributes map[string]string, text string) (Step, error) {
 	loopUpateStatement := &LoopUpdateStatement{}
 	loopUpateStatement.tag = tag
 	loopUpateStatement.attributes = attributes
@@ -123,7 +123,7 @@ func createLoopUpdateStatementStep(parent Step, tag string, attributes map[strin
 	return loopUpateStatement, nil
 }
 
-func createLoopDoStatementStep(parent Step, tag string, attributes map[string]string, text string) (Step, error) {
+func createLoopDoStatementStep(tag string, attributes map[string]string, text string) (Step, error) {
 	loopDoStatement := &LoopDoStatement{}
 	loopDoStatement.tag = tag
 	loopDoStatement.attributes = attributes

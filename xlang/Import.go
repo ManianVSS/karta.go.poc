@@ -32,7 +32,7 @@ func (importStep *ImportStep) Execute(scope *Scope, basedir string) (any, error)
 	return ExecuteFile(scope, basedir+"/"+importStep.fileName)
 }
 
-func createImportStep(parent Step, tag string, attributes map[string]string, text string) (Step, error) {
+func createImportStep(tag string, attributes map[string]string, text string) (Step, error) {
 	importStep := &ImportStep{}
 	importStep.tag = tag
 	importStep.attributes = attributes

@@ -20,7 +20,7 @@ type Step interface {
 	Execute(*Scope, string) (any, error)
 }
 
-type InitStepFunction func(Step, string, map[string]string, string) (Step, error)
+type InitStepFunction func(string, map[string]string, string) (Step, error)
 
 var stepDefMap map[string]InitStepFunction = map[string]InitStepFunction{}
 
@@ -117,7 +117,7 @@ func (baseStep *BaseStep) Execute(scope *Scope, basedir string) (any, error) {
 	return RunSteps(scope, basedir, baseStep.nestedSteps...)
 }
 
-func createBaseStep(parent Step, tag string, attributes map[string]string, text string) (Step, error) {
+func createBaseStep(tag string, attributes map[string]string, text string) (Step, error) {
 	baseStep := &BaseStep{}
 	baseStep.tag = tag
 	baseStep.attributes = attributes

@@ -37,7 +37,7 @@ func (exit *Exit) Execute(scope *Scope, basedir string) (any, error) {
 	return exit.code, nil
 }
 
-func createExitStep(parent Step, tag string, attributes map[string]string, text string) (Step, error) {
+func createExitStep(tag string, attributes map[string]string, text string) (Step, error) {
 	exit := &Exit{}
 	exit.tag = tag
 	exit.attributes = attributes

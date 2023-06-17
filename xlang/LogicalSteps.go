@@ -41,7 +41,7 @@ func (andStatement *AndStatement) Execute(scope *Scope, basedir string) (any, er
 	return true, nil
 }
 
-func createAndStatementStep(parent Step, tag string, attributes map[string]string, text string) (Step, error) {
+func createAndStatementStep(tag string, attributes map[string]string, text string) (Step, error) {
 	andStatement := &AndStatement{}
 	andStatement.tag = tag
 	andStatement.attributes = attributes
@@ -72,7 +72,7 @@ func (orStatement *OrStatement) Execute(scope *Scope, basedir string) (any, erro
 	return false, nil
 }
 
-func createOrStatementStep(parent Step, tag string, attributes map[string]string, text string) (Step, error) {
+func createOrStatementStep(tag string, attributes map[string]string, text string) (Step, error) {
 	orStatement := &OrStatement{}
 	orStatement.tag = tag
 	orStatement.attributes = attributes
@@ -98,7 +98,7 @@ func (notStatement *NotStatement) Execute(scope *Scope, basedir string) (any, er
 	}
 }
 
-func createNotStatementStep(parent Step, tag string, attributes map[string]string, text string) (Step, error) {
+func createNotStatementStep(tag string, attributes map[string]string, text string) (Step, error) {
 	notStatement := &NotStatement{}
 	notStatement.tag = tag
 	notStatement.attributes = attributes

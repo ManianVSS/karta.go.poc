@@ -27,7 +27,7 @@ func GetStepBaseForNode(parent Step, node *xmldom.Node) (Step, error) {
 	if !ok {
 		return nil, fmt.Errorf("undefined step %s", node.Name)
 	}
-	if step, err := createStepFunction(parent, node.Name, xmlAttrToAttributes(node.Attributes), node.Text); err == nil {
+	if step, err := createStepFunction(node.Name, xmlAttrToAttributes(node.Attributes), node.Text); err == nil {
 		if step.Parent(nil) == nil {
 			step.Parent(parent)
 		}
@@ -45,6 +45,33 @@ func GetStepForNode(parent Step, node *xmldom.Node) (Step, error) {
 		return step, nil
 	} else {
 		return step, err
+	}
+}
+
+func GetStepForNode2(node *xmldom.Node) (Step, error) {
+
+	createStepFunction, ok := stepDefMap[node.Name]
+	if !ok {
+		return nil, fmt.Errorf("undefined step %s", node.Name)
+	}
+	if step, err := createStepFunction(node.Name, xmlAttrToAttributes(node.Attributes), node.Text); err == nil {
+		// if step.Parent(nil) == nil {
+		// 	step.Parent(parent)
+		// }
+
+		if node.Children != nil {
+			for _, childNode := range node.Children {
+				if childStep, err := GetStepForNode2(childNode); err == nil {
+					step.Steps(childStep)
+				} else {
+					return step, err
+				}
+			}
+		}
+
+		return step, err
+	} else {
+		return step, fmt.Errorf("could not parse step %s using step parsing handler function, %s", node.Name, err.Error())
 	}
 }
 

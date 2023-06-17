@@ -47,10 +47,9 @@ func (customStepDefinition *CustomStepDefinition) Execute(scope *Scope, basedir 
 	if _, ok := stepDefMap[customStepDefinition.name]; !ok {
 
 		stepDefMap[customStepDefinition.name] =
-			func(parent Step, tag string, attributes map[string]string, text string) (Step, error) {
+			func(tag string, attributes map[string]string, text string) (Step, error) {
 				// fmt.Printf("Entering the closure.. Steps to Copy %#v", customStepDefinition.nestedSteps)
 				customStep := &BaseStep{}
-				customStep.parent = parent
 				customStep.tag = tag
 				customStep.attributes = attributes
 				customStep.text = text
@@ -67,7 +66,7 @@ func (customStepDefinition *CustomStepDefinition) Execute(scope *Scope, basedir 
 	return nil, nil
 }
 
-func createCustomStepDefinitionStep(parent Step, tag string, attributes map[string]string, text string) (Step, error) {
+func createCustomStepDefinitionStep(tag string, attributes map[string]string, text string) (Step, error) {
 	customStepDefinition := &CustomStepDefinition{}
 	customStepDefinition.tag = tag
 	customStepDefinition.attributes = attributes
