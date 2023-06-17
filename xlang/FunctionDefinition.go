@@ -24,7 +24,7 @@ func (functionDefinition *FunctionDefinition) InitalizeAndCheck() error {
 	return nil
 }
 
-func (functionDefinition *FunctionDefinition) Execute(scope *Scope, basedir string) (any, error) {
+func (functionDefinition *FunctionDefinition) Execute(scope *Scope) (any, error) {
 
 	if err := functionDefinition.InitalizeAndCheck(); err != nil {
 		return nil, err

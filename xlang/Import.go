@@ -23,13 +23,13 @@ func (importStep *ImportStep) InitalizeAndCheck() error {
 	return nil
 }
 
-func (importStep *ImportStep) Execute(scope *Scope, basedir string) (any, error) {
+func (importStep *ImportStep) Execute(scope *Scope) (any, error) {
 
 	if err := importStep.InitalizeAndCheck(); err != nil {
 		return nil, err
 	}
 
-	return ExecuteFile(scope, basedir+"/"+importStep.fileName)
+	return ExecuteFile(scope, BaseDir+importStep.fileName)
 }
 
 func createImportStep(tag string, attributes map[string]string, text string) (Step, error) {

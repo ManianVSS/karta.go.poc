@@ -35,7 +35,7 @@ func (customStepDefinition *CustomStepDefinition) InitalizeAndCheck() error {
 	return nil
 }
 
-func (customStepDefinition *CustomStepDefinition) Execute(scope *Scope, basedir string) (any, error) {
+func (customStepDefinition *CustomStepDefinition) Execute(scope *Scope) (any, error) {
 
 	if err := customStepDefinition.InitalizeAndCheck(); err != nil {
 		return nil, err

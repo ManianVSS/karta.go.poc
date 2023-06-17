@@ -27,7 +27,7 @@ func (exit *Exit) InitalizeAndCheck() error {
 	return nil
 }
 
-func (exit *Exit) Execute(scope *Scope, basedir string) (any, error) {
+func (exit *Exit) Execute(scope *Scope) (any, error) {
 
 	if err := exit.InitalizeAndCheck(); err != nil {
 		return nil, err

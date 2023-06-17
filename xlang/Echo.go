@@ -25,7 +25,7 @@ func (echo *Echo) InitalizeAndCheck() error {
 	return nil
 }
 
-func (echo *Echo) Execute(scope *Scope, basedir string) (any, error) {
+func (echo *Echo) Execute(scope *Scope) (any, error) {
 
 	if err := echo.InitalizeAndCheck(); err != nil {
 		return nil, err

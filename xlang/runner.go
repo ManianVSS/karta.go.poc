@@ -11,6 +11,8 @@ func init() {
 	stepDefMap["app"] = createBaseStep
 }
 
+var BaseDir string = "/"
+
 func GetStepChildrenForNode(parent Step, nodeChildren []*xmldom.Node) error {
 	for _, childNode := range nodeChildren {
 		if childStep, err := GetStepForNode(parent, childNode); err == nil {
@@ -48,33 +50,6 @@ func GetStepForNode(parent Step, node *xmldom.Node) (Step, error) {
 	}
 }
 
-func GetStepForNode2(node *xmldom.Node) (Step, error) {
-
-	createStepFunction, ok := stepDefMap[node.Name]
-	if !ok {
-		return nil, fmt.Errorf("undefined step %s", node.Name)
-	}
-	if step, err := createStepFunction(node.Name, xmlAttrToAttributes(node.Attributes), node.Text); err == nil {
-		// if step.Parent(nil) == nil {
-		// 	step.Parent(parent)
-		// }
-
-		if node.Children != nil {
-			for _, childNode := range node.Children {
-				if childStep, err := GetStepForNode2(childNode); err == nil {
-					step.Steps(childStep)
-				} else {
-					return step, err
-				}
-			}
-		}
-
-		return step, err
-	} else {
-		return step, fmt.Errorf("could not parse step %s using step parsing handler function, %s", node.Name, err.Error())
-	}
-}
-
 func ExecuteFile(scope *Scope, fileName string) (any, error) {
 	doc := xmldom.Must(xmldom.ParseFile(fileName))
 	root := doc.Root
@@ -83,12 +58,12 @@ func ExecuteFile(scope *Scope, fileName string) (any, error) {
 		return nil, fmt.Errorf("scope was not provided to run the file")
 	}
 
-	basedir := filepath.Dir(fileName)
+	BaseDir = filepath.Dir(fileName) + "/"
 
 	//Handle non App step
 	if root.Name != "app" {
 		if rootStep, err := GetStepForNode(nil, root); err == nil {
-			return rootStep.Execute(scope, basedir)
+			return rootStep.Execute(scope)
 		} else {
 			return nil, err
 		}
@@ -107,7 +82,7 @@ func ExecuteFile(scope *Scope, fileName string) (any, error) {
 			if mainStep == nil {
 				return overallResult, fmt.Errorf("unexpected program parsing error; Nil root step")
 			}
-			result, err := mainStep.Execute(scope, basedir)
+			result, err := mainStep.Execute(scope)
 			overallResult[i] = result
 			if err != nil {
 				return overallResult, err

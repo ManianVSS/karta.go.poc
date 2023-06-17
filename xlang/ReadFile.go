@@ -31,7 +31,7 @@ func (readFileStep *ReadFileStep) InitalizeAndCheck() error {
 	return nil
 }
 
-func (readFileStep *ReadFileStep) Execute(scope *Scope, basedir string) (any, error) {
+func (readFileStep *ReadFileStep) Execute(scope *Scope) (any, error) {
 
 	if err := readFileStep.InitalizeAndCheck(); err != nil {
 		return nil, err

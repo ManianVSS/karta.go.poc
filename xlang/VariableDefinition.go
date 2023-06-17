@@ -38,7 +38,7 @@ func (variableDefinition *VariableDefinition) InitalizeAndCheck() error {
 	return nil
 }
 
-func (variableDefinition *VariableDefinition) Execute(scope *Scope, basedir string) (any, error) {
+func (variableDefinition *VariableDefinition) Execute(scope *Scope) (any, error) {
 
 	if err := variableDefinition.InitalizeAndCheck(); err != nil {
 		return nil, err

@@ -23,14 +23,14 @@ func (andStatement *AndStatement) InitalizeAndCheck() error {
 	return error
 }
 
-func (andStatement *AndStatement) Execute(scope *Scope, basedir string) (any, error) {
+func (andStatement *AndStatement) Execute(scope *Scope) (any, error) {
 
 	if err := andStatement.InitalizeAndCheck(); err != nil {
 		return nil, err
 	}
 
 	for _, stepTobeAnded := range andStatement.nestedSteps {
-		if result, err := stepTobeAnded.Execute(scope, basedir); err == nil {
+		if result, err := stepTobeAnded.Execute(scope); err == nil {
 			if !ToBool(result) {
 				return false, nil
 			}
@@ -54,14 +54,14 @@ func (orStatement *OrStatement) InitalizeAndCheck() error {
 	return error
 }
 
-func (orStatement *OrStatement) Execute(scope *Scope, basedir string) (any, error) {
+func (orStatement *OrStatement) Execute(scope *Scope) (any, error) {
 
 	if err := orStatement.InitalizeAndCheck(); err != nil {
 		return nil, err
 	}
 
 	for _, stepTobeOred := range orStatement.nestedSteps {
-		if result, err := stepTobeOred.Execute(scope, basedir); err == nil {
+		if result, err := stepTobeOred.Execute(scope); err == nil {
 			if ToBool(result) {
 				return true, nil
 			}
@@ -85,13 +85,13 @@ func (notStatement *NotStatement) InitalizeAndCheck() error {
 	return error
 }
 
-func (notStatement *NotStatement) Execute(scope *Scope, basedir string) (any, error) {
+func (notStatement *NotStatement) Execute(scope *Scope) (any, error) {
 
 	if err := notStatement.InitalizeAndCheck(); err != nil {
 		return nil, err
 	}
 
-	if result, err := notStatement.nestedSteps[0].Execute(scope, basedir); err == nil {
+	if result, err := notStatement.nestedSteps[0].Execute(scope); err == nil {
 		return !ToBool(result), nil
 	} else {
 		return false, err

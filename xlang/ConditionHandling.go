@@ -73,7 +73,7 @@ func (ifStatement *IfStatement) InitalizeAndCheck() error {
 	return nil
 }
 
-func (ifstatement *IfStatement) Execute(scope *Scope, basedir string) (any, error) {
+func (ifstatement *IfStatement) Execute(scope *Scope) (any, error) {
 
 	if err := ifstatement.InitalizeAndCheck(); err != nil {
 		return nil, err
@@ -84,13 +84,13 @@ func (ifstatement *IfStatement) Execute(scope *Scope, basedir string) (any, erro
 	ifScope.functions = map[string][]Step{}
 	ifScope.parent = scope
 
-	if result, err := ifstatement.conditionStep.Execute(&ifScope, basedir); err == nil {
+	if result, err := ifstatement.conditionStep.Execute(&ifScope); err == nil {
 		if ToBool(result) {
-			return ifstatement.thenBlock.Execute(scope, basedir)
+			return ifstatement.thenBlock.Execute(scope)
 		} else {
 			if ifstatement.elseIfBlocks != nil {
 				for _, elseIfStatement := range ifstatement.elseIfBlocks {
-					if result, err := elseIfStatement.Execute(&ifScope, basedir); err == nil {
+					if result, err := elseIfStatement.Execute(&ifScope); err == nil {
 						if ToBool(result) {
 							return true, nil
 						}
@@ -101,7 +101,7 @@ func (ifstatement *IfStatement) Execute(scope *Scope, basedir string) (any, erro
 			}
 
 			if ifstatement.elseBlock != nil {
-				return ifstatement.elseBlock.Execute(scope, basedir)
+				return ifstatement.elseBlock.Execute(scope)
 			}
 		}
 	} else {
@@ -146,15 +146,15 @@ func (elseIfStatement *ElseIfStatement) InitalizeAndCheck() error {
 	return nil
 }
 
-func (elseIfstatement *ElseIfStatement) Execute(scope *Scope, basedir string) (any, error) {
+func (elseIfstatement *ElseIfStatement) Execute(scope *Scope) (any, error) {
 
 	if err := elseIfstatement.InitalizeAndCheck(); err != nil {
 		return nil, err
 	}
 
-	if result, err := elseIfstatement.conditionStep.Execute(scope, basedir); err == nil {
+	if result, err := elseIfstatement.conditionStep.Execute(scope); err == nil {
 		if ToBool(result) {
-			return elseIfstatement.thenBlock.Execute(scope, basedir)
+			return elseIfstatement.thenBlock.Execute(scope)
 		}
 	} else {
 		return false, err

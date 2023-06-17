@@ -74,7 +74,7 @@ func (compare *BinaryOperation) InitalizeAndCheck() error {
 	return nil
 }
 
-func (compare *BinaryOperation) Execute(scope *Scope, basedir string) (any, error) {
+func (compare *BinaryOperation) Execute(scope *Scope) (any, error) {
 
 	if err := compare.InitalizeAndCheck(); err != nil {
 		return nil, err

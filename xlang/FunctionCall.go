@@ -39,7 +39,7 @@ func (functionCall *FunctionCall) InitalizeAndCheck() error {
 	return nil
 }
 
-func (functionCall *FunctionCall) Execute(scope *Scope, basedir string) (any, error) {
+func (functionCall *FunctionCall) Execute(scope *Scope) (any, error) {
 
 	if err := functionCall.InitalizeAndCheck(); err != nil {
 		return nil, err
@@ -58,7 +58,7 @@ func (functionCall *FunctionCall) Execute(scope *Scope, basedir string) (any, er
 			}
 		}
 
-		if results, err := RunSteps(&functionScope, basedir, functionSteps...); err == nil {
+		if results, err := RunSteps(&functionScope, functionSteps...); err == nil {
 
 			for _, outputParameter := range functionCall.outputParameters {
 

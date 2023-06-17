@@ -64,7 +64,7 @@ func (forStatement *ForStatement) InitalizeAndCheck() error {
 	return nil
 }
 
-func (forStatement *ForStatement) Execute(scope *Scope, basedir string) (any, error) {
+func (forStatement *ForStatement) Execute(scope *Scope) (any, error) {
 
 	if err := forStatement.InitalizeAndCheck(); err != nil {
 		return nil, err
@@ -76,13 +76,13 @@ func (forStatement *ForStatement) Execute(scope *Scope, basedir string) (any, er
 	forScope.parent = scope
 
 	var atleastOneIteration bool = false
-	if initResult, initErr := forStatement.forInitStatement.Execute(&forScope, basedir); initErr == nil {
+	if initResult, initErr := forStatement.forInitStatement.Execute(&forScope); initErr == nil {
 		for iterationIndex := 0; true; iterationIndex++ {
 			forScope.variables["__iterationIndex__"] = iterationIndex
-			if conditionResult, conditionErr := forStatement.conditionStep.Execute(&forScope, basedir); conditionErr == nil {
+			if conditionResult, conditionErr := forStatement.conditionStep.Execute(&forScope); conditionErr == nil {
 				if ToBool(conditionResult) {
 					atleastOneIteration = true
-					if iterationResult, iterationErr := RunSteps(&forScope, basedir, forStatement.forDoStatement, forStatement.forUpdateStatement); iterationErr != nil {
+					if iterationResult, iterationErr := RunSteps(&forScope, forStatement.forDoStatement, forStatement.forUpdateStatement); iterationErr != nil {
 						return iterationResult, iterationErr
 					}
 				} else {

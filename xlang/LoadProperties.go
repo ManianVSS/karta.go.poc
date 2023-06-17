@@ -26,7 +26,7 @@ func (loadPropertiesStep *LoadPropertiesStep) InitalizeAndCheck() error {
 	return nil
 }
 
-func (loadPropertiesStep *LoadPropertiesStep) Execute(scope *Scope, basedir string) (any, error) {
+func (loadPropertiesStep *LoadPropertiesStep) Execute(scope *Scope) (any, error) {
 
 	if err := loadPropertiesStep.InitalizeAndCheck(); err != nil {
 		return nil, err
