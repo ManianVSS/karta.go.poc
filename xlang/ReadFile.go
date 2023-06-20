@@ -17,13 +17,13 @@ type ReadFileStep struct {
 
 func (readFileStep *ReadFileStep) InitalizeAndCheck() error {
 
-	if file, ok := readFileStep.attributes["file"]; ok {
+	if file, ok := readFileStep.parameters["file"]; ok {
 		readFileStep.fileName = file
 	} else {
 		return fmt.Errorf("file attribute missing")
 	}
 
-	if resultVar, ok := readFileStep.attributes["resultVar"]; ok {
+	if resultVar, ok := readFileStep.parameters["resultVar"]; ok {
 		readFileStep.resultVar = resultVar
 	} else {
 		readFileStep.resultVar = ""
@@ -51,10 +51,10 @@ func (readFileStep *ReadFileStep) Execute(scope *Scope) (any, error) {
 	return stringValue, nil
 }
 
-func createReadFileStep(tag string, attributes map[string]string, text string) (Step, error) {
+func createReadFileStep(name string, parameters map[string]string, body string) (Step, error) {
 	readFileStep := &ReadFileStep{}
-	readFileStep.tag = tag
-	readFileStep.attributes = attributes
-	readFileStep.text = text
+	readFileStep.name = name
+	readFileStep.parameters = parameters
+	readFileStep.body = body
 	return readFileStep, nil
 }

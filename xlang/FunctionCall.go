@@ -11,26 +11,26 @@ func init() {
 
 type FunctionCall struct {
 	BaseStep
-	name             string
+	functionName     string
 	inputParameters  []string
 	outputParameters []string
 }
 
 func (functionCall *FunctionCall) InitalizeAndCheck() error {
 
-	if name, ok := functionCall.attributes["name"]; ok {
-		functionCall.name = name
+	if name, ok := functionCall.parameters["name"]; ok {
+		functionCall.functionName = name
 	} else {
 		return fmt.Errorf("name attribute missing")
 	}
 
-	if inputParameters, ok := functionCall.attributes["inputParameters"]; ok {
+	if inputParameters, ok := functionCall.parameters["inputParameters"]; ok {
 		functionCall.inputParameters = strings.Split(inputParameters, ",")
 	} else {
 		functionCall.inputParameters = []string{}
 	}
 
-	if outputParameters, ok := functionCall.attributes["outputParameters"]; ok {
+	if outputParameters, ok := functionCall.parameters["outputParameters"]; ok {
 		functionCall.outputParameters = strings.Split(outputParameters, ",")
 	} else {
 		functionCall.outputParameters = []string{}
@@ -45,7 +45,7 @@ func (functionCall *FunctionCall) Execute(scope *Scope) (any, error) {
 		return nil, err
 	}
 
-	if functionSteps, ok := scope.getFunction(functionCall.name); ok {
+	if functionSteps, ok := scope.getFunction(functionCall.functionName); ok {
 		functionScope := Scope{}
 		functionScope.variables = map[string]any{}
 		functionScope.functions = map[string][]Step{}
@@ -74,14 +74,14 @@ func (functionCall *FunctionCall) Execute(scope *Scope) (any, error) {
 		}
 
 	} else {
-		return nil, fmt.Errorf("function definitions not present in known scope %s", functionCall.name)
+		return nil, fmt.Errorf("function definitions not present in known scope %s", functionCall.functionName)
 	}
 }
 
-func createFunctionCallStep(tag string, attributes map[string]string, text string) (Step, error) {
+func createFunctionCallStep(name string, parameters map[string]string, body string) (Step, error) {
 	functionCall := &FunctionCall{}
-	functionCall.tag = tag
-	functionCall.attributes = attributes
-	functionCall.text = text
+	functionCall.name = name
+	functionCall.parameters = parameters
+	functionCall.body = body
 	return functionCall, nil
 }

@@ -29,7 +29,7 @@ func (andStatement *AndStatement) Execute(scope *Scope) (any, error) {
 		return nil, err
 	}
 
-	for _, stepTobeAnded := range andStatement.nestedSteps {
+	for _, stepTobeAnded := range andStatement.steps {
 		if result, err := stepTobeAnded.Execute(scope); err == nil {
 			if !ToBool(result) {
 				return false, nil
@@ -41,11 +41,11 @@ func (andStatement *AndStatement) Execute(scope *Scope) (any, error) {
 	return true, nil
 }
 
-func createAndStatementStep(tag string, attributes map[string]string, text string) (Step, error) {
+func createAndStatementStep(name string, parameters map[string]string, body string) (Step, error) {
 	andStatement := &AndStatement{}
-	andStatement.tag = tag
-	andStatement.attributes = attributes
-	andStatement.text = text
+	andStatement.name = name
+	andStatement.parameters = parameters
+	andStatement.body = body
 	return andStatement, nil
 }
 
@@ -60,7 +60,7 @@ func (orStatement *OrStatement) Execute(scope *Scope) (any, error) {
 		return nil, err
 	}
 
-	for _, stepTobeOred := range orStatement.nestedSteps {
+	for _, stepTobeOred := range orStatement.steps {
 		if result, err := stepTobeOred.Execute(scope); err == nil {
 			if ToBool(result) {
 				return true, nil
@@ -72,11 +72,11 @@ func (orStatement *OrStatement) Execute(scope *Scope) (any, error) {
 	return false, nil
 }
 
-func createOrStatementStep(tag string, attributes map[string]string, text string) (Step, error) {
+func createOrStatementStep(name string, parameters map[string]string, body string) (Step, error) {
 	orStatement := &OrStatement{}
-	orStatement.tag = tag
-	orStatement.attributes = attributes
-	orStatement.text = text
+	orStatement.name = name
+	orStatement.parameters = parameters
+	orStatement.body = body
 	return orStatement, nil
 }
 
@@ -91,17 +91,17 @@ func (notStatement *NotStatement) Execute(scope *Scope) (any, error) {
 		return nil, err
 	}
 
-	if result, err := notStatement.nestedSteps[0].Execute(scope); err == nil {
+	if result, err := notStatement.steps[0].Execute(scope); err == nil {
 		return !ToBool(result), nil
 	} else {
 		return false, err
 	}
 }
 
-func createNotStatementStep(tag string, attributes map[string]string, text string) (Step, error) {
+func createNotStatementStep(name string, parameters map[string]string, body string) (Step, error) {
 	notStatement := &NotStatement{}
-	notStatement.tag = tag
-	notStatement.attributes = attributes
-	notStatement.text = text
+	notStatement.name = name
+	notStatement.parameters = parameters
+	notStatement.body = body
 	return notStatement, nil
 }

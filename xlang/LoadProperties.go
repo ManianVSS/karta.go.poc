@@ -18,7 +18,7 @@ type LoadPropertiesStep struct {
 
 func (loadPropertiesStep *LoadPropertiesStep) InitalizeAndCheck() error {
 
-	if file, ok := loadPropertiesStep.attributes["file"]; ok {
+	if file, ok := loadPropertiesStep.parameters["file"]; ok {
 		loadPropertiesStep.fileName = file
 	} else {
 		return fmt.Errorf("file attribute missing")
@@ -53,10 +53,10 @@ func (loadPropertiesStep *LoadPropertiesStep) Execute(scope *Scope) (any, error)
 	return result, nil
 }
 
-func createLoadPropertiesStep(tag string, attributes map[string]string, text string) (Step, error) {
+func createLoadPropertiesStep(name string, parameters map[string]string, body string) (Step, error) {
 	loadPropertiesStep := &LoadPropertiesStep{}
-	loadPropertiesStep.tag = tag
-	loadPropertiesStep.attributes = attributes
-	loadPropertiesStep.text = text
+	loadPropertiesStep.name = name
+	loadPropertiesStep.parameters = parameters
+	loadPropertiesStep.body = body
 	return loadPropertiesStep, nil
 }

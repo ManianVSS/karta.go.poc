@@ -10,26 +10,26 @@ func init() {
 
 type VariableDefinition struct {
 	BaseStep
-	name    string
-	value   string
-	varType string
+	variableName string
+	value        string
+	varType      string
 }
 
 func (variableDefinition *VariableDefinition) InitalizeAndCheck() error {
 
-	if name, ok := variableDefinition.attributes["name"]; ok {
-		variableDefinition.name = name
+	if name, ok := variableDefinition.parameters["name"]; ok {
+		variableDefinition.variableName = name
 	} else {
 		return fmt.Errorf("name attribute missing")
 	}
 
-	if value, ok := variableDefinition.attributes["value"]; ok {
+	if value, ok := variableDefinition.parameters["value"]; ok {
 		variableDefinition.value = value
 	} else {
 		return fmt.Errorf("value attribute missing")
 	}
 
-	if varType, ok := variableDefinition.attributes["type"]; ok {
+	if varType, ok := variableDefinition.parameters["type"]; ok {
 		variableDefinition.varType = varType
 	} else {
 		return fmt.Errorf("type attribute missing")
@@ -52,7 +52,7 @@ func (variableDefinition *VariableDefinition) Execute(scope *Scope) (any, error)
 	strReplacedWithVariables := replaceVarsInString(variableDefinition.value, scope, parentAttributes)
 	if strToVarFunction, ok := variableParserFunctionMap[variableDefinition.varType]; ok {
 		if parsedValue, err := strToVarFunction(strReplacedWithVariables); err == nil {
-			scope.variables[variableDefinition.name] = parsedValue
+			scope.variables[variableDefinition.variableName] = parsedValue
 		} else {
 			return parsedValue, err
 		}
@@ -62,10 +62,10 @@ func (variableDefinition *VariableDefinition) Execute(scope *Scope) (any, error)
 	return variableDefinition.value, nil
 }
 
-func createVariableDefinitionStep(tag string, attributes map[string]string, text string) (Step, error) {
+func createVariableDefinitionStep(name string, parameters map[string]string, body string) (Step, error) {
 	variableDefinition := &VariableDefinition{}
-	variableDefinition.tag = tag
-	variableDefinition.attributes = attributes
-	variableDefinition.text = text
+	variableDefinition.name = name
+	variableDefinition.parameters = parameters
+	variableDefinition.body = body
 	return variableDefinition, nil
 }

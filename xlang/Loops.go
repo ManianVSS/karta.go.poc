@@ -35,28 +35,28 @@ func (forStatement *ForStatement) InitalizeAndCheck() error {
 		return err
 	}
 
-	initBlock := forStatement.nestedSteps[0]
+	initBlock := forStatement.steps[0]
 
 	if initBlock.Name() != "init" {
-		return fmt.Errorf("%s's first step needs to be a init block", forStatement.tag)
+		return fmt.Errorf("%s's first step needs to be a init block", forStatement.name)
 	}
 
 	forStatement.forInitStatement = initBlock.(*LoopInitStatement)
 
-	forStatement.conditionStep = forStatement.nestedSteps[1]
+	forStatement.conditionStep = forStatement.steps[1]
 
-	updateBlock := forStatement.nestedSteps[2]
+	updateBlock := forStatement.steps[2]
 
 	if updateBlock.Name() != "update" {
-		return fmt.Errorf("%s's first step needs to be a init block", forStatement.tag)
+		return fmt.Errorf("%s's first step needs to be a init block", forStatement.name)
 	}
 
 	forStatement.forUpdateStatement = updateBlock.(*LoopUpdateStatement)
 
-	doBlock := forStatement.nestedSteps[3]
+	doBlock := forStatement.steps[3]
 
 	if doBlock.Name() != "do" {
-		return fmt.Errorf("%s's first step needs to be a init block", forStatement.tag)
+		return fmt.Errorf("%s's first step needs to be a init block", forStatement.name)
 	}
 
 	forStatement.forDoStatement = doBlock.(*LoopDoStatement)
@@ -99,34 +99,34 @@ func (forStatement *ForStatement) Execute(scope *Scope) (any, error) {
 	return atleastOneIteration, nil
 }
 
-func createForStatementStep(tag string, attributes map[string]string, text string) (Step, error) {
+func createForStatementStep(name string, parameters map[string]string, body string) (Step, error) {
 	forStatement := &ForStatement{}
-	forStatement.tag = tag
-	forStatement.attributes = attributes
-	forStatement.text = text
+	forStatement.name = name
+	forStatement.parameters = parameters
+	forStatement.body = body
 	return forStatement, nil
 }
 
-func createLoopInitStatementStep(tag string, attributes map[string]string, text string) (Step, error) {
+func createLoopInitStatementStep(name string, parameters map[string]string, body string) (Step, error) {
 	loopInitStatement := &LoopInitStatement{}
-	loopInitStatement.tag = tag
-	loopInitStatement.attributes = attributes
-	loopInitStatement.text = text
+	loopInitStatement.name = name
+	loopInitStatement.parameters = parameters
+	loopInitStatement.body = body
 	return loopInitStatement, nil
 }
 
-func createLoopUpdateStatementStep(tag string, attributes map[string]string, text string) (Step, error) {
+func createLoopUpdateStatementStep(name string, parameters map[string]string, body string) (Step, error) {
 	loopUpateStatement := &LoopUpdateStatement{}
-	loopUpateStatement.tag = tag
-	loopUpateStatement.attributes = attributes
-	loopUpateStatement.text = text
+	loopUpateStatement.name = name
+	loopUpateStatement.parameters = parameters
+	loopUpateStatement.body = body
 	return loopUpateStatement, nil
 }
 
-func createLoopDoStatementStep(tag string, attributes map[string]string, text string) (Step, error) {
+func createLoopDoStatementStep(name string, parameters map[string]string, body string) (Step, error) {
 	loopDoStatement := &LoopDoStatement{}
-	loopDoStatement.tag = tag
-	loopDoStatement.attributes = attributes
-	loopDoStatement.text = text
+	loopDoStatement.name = name
+	loopDoStatement.parameters = parameters
+	loopDoStatement.body = body
 	return loopDoStatement, nil
 }

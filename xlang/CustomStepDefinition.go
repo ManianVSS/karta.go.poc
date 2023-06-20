@@ -11,24 +11,24 @@ func init() {
 
 type CustomStepDefinition struct {
 	BaseStep
-	name           string
+	stepName       string
 	attributeNames []string
 	textAttribute  string
 }
 
 func (customStepDefinition *CustomStepDefinition) InitalizeAndCheck() error {
 
-	if name, ok := customStepDefinition.attributes["name"]; ok {
-		customStepDefinition.name = name
+	if stepName, ok := customStepDefinition.parameters["name"]; ok {
+		customStepDefinition.stepName = stepName
 	} else {
 		return fmt.Errorf("name attribute missing")
 	}
 
-	if attributeNames, ok := customStepDefinition.attributes["attributeNames"]; ok {
+	if attributeNames, ok := customStepDefinition.parameters["attributeNames"]; ok {
 		customStepDefinition.attributeNames = strings.Split(attributeNames, ",")
 	}
 
-	if textAttribute, ok := customStepDefinition.attributes["textAttribute"]; ok {
+	if textAttribute, ok := customStepDefinition.parameters["textAttribute"]; ok {
 		customStepDefinition.textAttribute = textAttribute
 	}
 
@@ -44,32 +44,32 @@ func (customStepDefinition *CustomStepDefinition) Execute(scope *Scope) (any, er
 	// stepTemplateSteps := make([]Step, len(customStepDefinition.nestedSteps))
 	// copy(stepTemplateSteps, customStepDefinition.nestedSteps)
 
-	if _, ok := stepDefMap[customStepDefinition.name]; !ok {
+	if _, ok := stepDefMap[customStepDefinition.stepName]; !ok {
 
-		stepDefMap[customStepDefinition.name] =
-			func(tag string, attributes map[string]string, text string) (Step, error) {
+		stepDefMap[customStepDefinition.stepName] =
+			func(name string, parameters map[string]string, body string) (Step, error) {
 				// fmt.Printf("Entering the closure.. Steps to Copy %#v", customStepDefinition.nestedSteps)
 				customStep := &BaseStep{}
-				customStep.tag = tag
-				customStep.attributes = attributes
-				customStep.text = text
-				customStep.nestedSteps = make([]Step, len(customStepDefinition.nestedSteps)) //customStepDefinition.nestedSteps
-				copy(customStep.nestedSteps, customStepDefinition.nestedSteps)
-				for index := range customStep.nestedSteps {
-					customStep.nestedSteps[index].Parent(customStep)
+				customStep.name = name
+				customStep.parameters = parameters
+				customStep.body = body
+				customStep.steps = make([]Step, len(customStepDefinition.steps)) //customStepDefinition.nestedSteps
+				copy(customStep.steps, customStepDefinition.steps)
+				for index := range customStep.steps {
+					customStep.steps[index].Parent(customStep)
 				}
 				return customStep, nil
 			}
 	} else {
-		return nil, fmt.Errorf("step definition already present for name %s", customStepDefinition.name)
+		return nil, fmt.Errorf("step definition already present for name %s", customStepDefinition.stepName)
 	}
 	return nil, nil
 }
 
-func createCustomStepDefinitionStep(tag string, attributes map[string]string, text string) (Step, error) {
+func createCustomStepDefinitionStep(name string, parameters map[string]string, body string) (Step, error) {
 	customStepDefinition := &CustomStepDefinition{}
-	customStepDefinition.tag = tag
-	customStepDefinition.attributes = attributes
-	customStepDefinition.text = text
+	customStepDefinition.name = name
+	customStepDefinition.parameters = parameters
+	customStepDefinition.body = body
 	return customStepDefinition, nil
 }

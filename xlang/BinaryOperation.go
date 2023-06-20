@@ -36,13 +36,13 @@ type BinaryOperation struct {
 
 func (compare *BinaryOperation) InitalizeAndCheck() error {
 
-	if lhs, ok := compare.attributes["lhs"]; ok {
+	if lhs, ok := compare.parameters["lhs"]; ok {
 		compare.lhs = lhs
 	} else {
 		return fmt.Errorf("lhs attribute missing")
 	}
 
-	operator, ok := compare.attributes["operator"]
+	operator, ok := compare.parameters["operator"]
 	if !ok {
 		operator = ""
 	}
@@ -53,19 +53,19 @@ func (compare *BinaryOperation) InitalizeAndCheck() error {
 		return fmt.Errorf("binary comparision function definition not registered %s", operator)
 	}
 
-	if rhs, ok := compare.attributes["rhs"]; ok {
+	if rhs, ok := compare.parameters["rhs"]; ok {
 		compare.rhs = rhs
 	} else {
 		return fmt.Errorf("rhs attribute missing")
 	}
 
-	if varType, ok := compare.attributes["type"]; ok {
+	if varType, ok := compare.parameters["type"]; ok {
 		compare.varType = varType
 	} else {
 		compare.varType = "string"
 	}
 
-	if resultVar, ok := compare.attributes["resultVar"]; ok {
+	if resultVar, ok := compare.parameters["resultVar"]; ok {
 		compare.resultVar = resultVar
 	} else {
 		compare.resultVar = ""
@@ -109,10 +109,10 @@ func (compare *BinaryOperation) Execute(scope *Scope) (any, error) {
 	}
 }
 
-func createBinaryOperationStep(tag string, attributes map[string]string, text string) (Step, error) {
+func createBinaryOperationStep(name string, parameters map[string]string, body string) (Step, error) {
 	binaryOperation := &BinaryOperation{}
-	binaryOperation.tag = tag
-	binaryOperation.attributes = attributes
-	binaryOperation.text = text
+	binaryOperation.name = name
+	binaryOperation.parameters = parameters
+	binaryOperation.body = body
 	return binaryOperation, nil
 }

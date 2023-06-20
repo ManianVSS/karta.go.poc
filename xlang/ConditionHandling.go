@@ -39,12 +39,12 @@ func (ifStatement *IfStatement) InitalizeAndCheck() error {
 		return err
 	}
 
-	ifStatement.conditionStep = ifStatement.nestedSteps[0]
+	ifStatement.conditionStep = ifStatement.steps[0]
 
-	thenBlock := ifStatement.nestedSteps[1]
+	thenBlock := ifStatement.steps[1]
 
 	if thenBlock.Name() != "then" {
-		return fmt.Errorf("%s's second step needs to be a then block", ifStatement.tag)
+		return fmt.Errorf("%s's second step needs to be a then block", ifStatement.name)
 	}
 
 	ifStatement.thenBlock = thenBlock.(*ThenStatement)
@@ -54,18 +54,18 @@ func (ifStatement *IfStatement) InitalizeAndCheck() error {
 
 		if stepCount > 3 {
 			for i := 2; i < lastIndex; i++ {
-				elseIfBlock := ifStatement.nestedSteps[i]
+				elseIfBlock := ifStatement.steps[i]
 				if elseIfBlock.Name() != "elseif" {
-					return fmt.Errorf("%s's step numbered %d needs to be a elseif block", ifStatement.tag, i)
+					return fmt.Errorf("%s's step numbered %d needs to be a elseif block", ifStatement.name, i)
 				}
-				ifStatement.elseIfBlocks = append(ifStatement.elseIfBlocks, ifStatement.nestedSteps[i].(*ElseIfStatement))
+				ifStatement.elseIfBlocks = append(ifStatement.elseIfBlocks, ifStatement.steps[i].(*ElseIfStatement))
 			}
 			// ifStatement.elseIfBlocks = ifStatement.nestedSteps[2:lastIndex]
 		}
 
-		elseBlock := ifStatement.nestedSteps[lastIndex]
+		elseBlock := ifStatement.steps[lastIndex]
 		if elseBlock.Name() != "else" {
-			return fmt.Errorf("%s's last step needs to be an else block", ifStatement.tag)
+			return fmt.Errorf("%s's last step needs to be an else block", ifStatement.name)
 		}
 		ifStatement.elseBlock = elseBlock.(*ElseStatement)
 
@@ -111,19 +111,19 @@ func (ifstatement *IfStatement) Execute(scope *Scope) (any, error) {
 	return false, nil
 }
 
-func createIfStatementStep(tag string, attributes map[string]string, text string) (Step, error) {
+func createIfStatementStep(name string, parameters map[string]string, body string) (Step, error) {
 	ifStatement := &IfStatement{}
-	ifStatement.tag = tag
-	ifStatement.attributes = attributes
-	ifStatement.text = text
+	ifStatement.name = name
+	ifStatement.parameters = parameters
+	ifStatement.body = body
 	return ifStatement, nil
 }
 
-func createThenStatementStep(tag string, attributes map[string]string, text string) (Step, error) {
+func createThenStatementStep(name string, parameters map[string]string, body string) (Step, error) {
 	thenStatement := &ThenStatement{}
-	thenStatement.tag = tag
-	thenStatement.attributes = attributes
-	thenStatement.text = text
+	thenStatement.name = name
+	thenStatement.parameters = parameters
+	thenStatement.body = body
 	return thenStatement, nil
 }
 
@@ -133,12 +133,12 @@ func (elseIfStatement *ElseIfStatement) InitalizeAndCheck() error {
 		return err
 	}
 
-	elseIfStatement.conditionStep = elseIfStatement.nestedSteps[0]
+	elseIfStatement.conditionStep = elseIfStatement.steps[0]
 
-	thenBlock := elseIfStatement.nestedSteps[1]
+	thenBlock := elseIfStatement.steps[1]
 
 	if thenBlock.Name() != "then" {
-		return fmt.Errorf("%s's second step needs to be a then block", elseIfStatement.tag)
+		return fmt.Errorf("%s's second step needs to be a then block", elseIfStatement.name)
 	}
 
 	elseIfStatement.thenBlock = thenBlock
@@ -163,18 +163,18 @@ func (elseIfstatement *ElseIfStatement) Execute(scope *Scope) (any, error) {
 	return false, nil
 }
 
-func createElseIfStatementStep(tag string, attributes map[string]string, text string) (Step, error) {
+func createElseIfStatementStep(name string, parameters map[string]string, body string) (Step, error) {
 	elseIfStatement := &ElseIfStatement{}
-	elseIfStatement.tag = tag
-	elseIfStatement.attributes = attributes
-	elseIfStatement.text = text
+	elseIfStatement.name = name
+	elseIfStatement.parameters = parameters
+	elseIfStatement.body = body
 	return elseIfStatement, nil
 }
 
-func createElseStatementStep(tag string, attributes map[string]string, text string) (Step, error) {
+func createElseStatementStep(name string, parameters map[string]string, body string) (Step, error) {
 	elseStatement := &ElseStatement{}
-	elseStatement.tag = tag
-	elseStatement.attributes = attributes
-	elseStatement.text = text
+	elseStatement.name = name
+	elseStatement.parameters = parameters
+	elseStatement.body = body
 	return elseStatement, nil
 }

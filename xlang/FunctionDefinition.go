@@ -10,13 +10,13 @@ func init() {
 
 type FunctionDefinition struct {
 	BaseStep
-	name string
+	functionName string
 }
 
 func (functionDefinition *FunctionDefinition) InitalizeAndCheck() error {
 
-	if name, ok := functionDefinition.attributes["name"]; ok {
-		functionDefinition.name = name
+	if name, ok := functionDefinition.parameters["name"]; ok {
+		functionDefinition.functionName = name
 	} else {
 		return fmt.Errorf("name attribute missing")
 	}
@@ -30,18 +30,18 @@ func (functionDefinition *FunctionDefinition) Execute(scope *Scope) (any, error)
 		return nil, err
 	}
 
-	if _, ok := scope.functions[functionDefinition.name]; !ok {
-		scope.functions[functionDefinition.name] = functionDefinition.nestedSteps
+	if _, ok := scope.functions[functionDefinition.functionName]; !ok {
+		scope.functions[functionDefinition.functionName] = functionDefinition.steps
 	} else {
-		return nil, fmt.Errorf("function definition already present for name %s", functionDefinition.name)
+		return nil, fmt.Errorf("function definition already present for name %s", functionDefinition.functionName)
 	}
 	return nil, nil
 }
 
-func createFunctionDefinitionStep(tag string, attributes map[string]string, text string) (Step, error) {
+func createFunctionDefinitionStep(name string, parameters map[string]string, body string) (Step, error) {
 	functionDefinition := &FunctionDefinition{}
-	functionDefinition.tag = tag
-	functionDefinition.attributes = attributes
-	functionDefinition.text = text
+	functionDefinition.name = name
+	functionDefinition.parameters = parameters
+	functionDefinition.body = body
 	return functionDefinition, nil
 }

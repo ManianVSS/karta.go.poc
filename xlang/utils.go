@@ -106,12 +106,12 @@ func ToBool(value any) bool {
 func checkAtleastNStep(step BaseStep, expectedStepsCount int) (int, error) {
 	stepCount := 0
 
-	if step.nestedSteps != nil {
-		stepCount = len(step.nestedSteps)
+	if step.steps != nil {
+		stepCount = len(step.steps)
 	}
 
 	if stepCount < expectedStepsCount {
-		return stepCount, fmt.Errorf("%s's block needs atleast %d condition", step.tag, expectedStepsCount)
+		return stepCount, fmt.Errorf("%s's block needs atleast %d condition", step.name, expectedStepsCount)
 	}
 
 	return stepCount, nil
@@ -120,12 +120,12 @@ func checkAtleastNStep(step BaseStep, expectedStepsCount int) (int, error) {
 func checkOnlyNStep(step BaseStep, expectedStepsCount int) (int, error) {
 	stepCount := 0
 
-	if step.nestedSteps != nil {
-		stepCount = len(step.nestedSteps)
+	if step.steps != nil {
+		stepCount = len(step.steps)
 	}
 
 	if stepCount != expectedStepsCount {
-		return stepCount, fmt.Errorf("%s's block needs only %d step", step.tag, expectedStepsCount)
+		return stepCount, fmt.Errorf("%s's block needs only %d step", step.name, expectedStepsCount)
 	}
 
 	return stepCount, nil

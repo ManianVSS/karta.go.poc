@@ -16,7 +16,7 @@ type Exit struct {
 
 func (exit *Exit) InitalizeAndCheck() error {
 
-	if errorCodeStr, ok := exit.attributes["code"]; ok {
+	if errorCodeStr, ok := exit.parameters["code"]; ok {
 		var err error
 		exit.code, err = strconv.Atoi(errorCodeStr)
 		if err != nil {
@@ -37,10 +37,10 @@ func (exit *Exit) Execute(scope *Scope) (any, error) {
 	return exit.code, nil
 }
 
-func createExitStep(tag string, attributes map[string]string, text string) (Step, error) {
+func createExitStep(name string, parameters map[string]string, body string) (Step, error) {
 	exit := &Exit{}
-	exit.tag = tag
-	exit.attributes = attributes
-	exit.text = text
+	exit.name = name
+	exit.parameters = parameters
+	exit.body = body
 	return exit, nil
 }

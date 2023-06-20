@@ -15,10 +15,10 @@ type Echo struct {
 
 func (echo *Echo) InitalizeAndCheck() error {
 
-	if message, ok := echo.attributes["message"]; ok {
+	if message, ok := echo.parameters["message"]; ok {
 		echo.message = message
-	} else if echo.text != "" {
-		echo.message = echo.text
+	} else if echo.body != "" {
+		echo.message = echo.body
 	} else {
 		return fmt.Errorf("message attribute missing")
 	}
@@ -39,10 +39,10 @@ func (echo *Echo) Execute(scope *Scope) (any, error) {
 	return byteWrittenCount > 0, err
 }
 
-func createEchoStep(tag string, attributes map[string]string, text string) (Step, error) {
+func createEchoStep(name string, parameters map[string]string, body string) (Step, error) {
 	echo := &Echo{}
-	echo.tag = tag
-	echo.attributes = attributes
-	echo.text = text
+	echo.name = name
+	echo.parameters = parameters
+	echo.body = body
 	return echo, nil
 }

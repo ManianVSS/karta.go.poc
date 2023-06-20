@@ -1,4 +1,3 @@
-// Om Ganeshaya Namah!!
 package main
 
 import (

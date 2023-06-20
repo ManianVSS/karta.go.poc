@@ -70,11 +70,11 @@ func RunSteps(scope *Scope, steps ...Step) (any, error) {
 }
 
 type BaseStep struct {
-	parent      Step
-	tag         string
-	attributes  map[string]string
-	text        string
-	nestedSteps []Step
+	parent     Step
+	name       string
+	parameters map[string]string
+	body       string
+	steps      []Step
 }
 
 func (baseStep *BaseStep) Parent(parent Step) Step {
@@ -85,23 +85,23 @@ func (baseStep *BaseStep) Parent(parent Step) Step {
 }
 
 func (baseStep *BaseStep) Name() string {
-	return baseStep.tag
+	return baseStep.name
 }
 
 func (baseStep *BaseStep) Parameters() map[string]string {
-	return baseStep.attributes
+	return baseStep.parameters
 }
 
 func (baseStep *BaseStep) Body() string {
-	return baseStep.text
+	return baseStep.body
 }
 
 func (baseStep *BaseStep) Steps(steps ...Step) []Step {
-	if baseStep.nestedSteps == nil {
-		baseStep.nestedSteps = []Step{}
+	if baseStep.steps == nil {
+		baseStep.steps = []Step{}
 	}
-	baseStep.nestedSteps = append(baseStep.nestedSteps, steps...)
-	return baseStep.nestedSteps
+	baseStep.steps = append(baseStep.steps, steps...)
+	return baseStep.steps
 }
 
 func (baseStep *BaseStep) InitalizeAndCheck() error {
@@ -114,13 +114,13 @@ func (baseStep *BaseStep) Execute(scope *Scope) (any, error) {
 		return nil, err
 	}
 
-	return RunSteps(scope, baseStep.nestedSteps...)
+	return RunSteps(scope, baseStep.steps...)
 }
 
-func createBaseStep(tag string, attributes map[string]string, text string) (Step, error) {
+func createBaseStep(name string, parameters map[string]string, body string) (Step, error) {
 	baseStep := &BaseStep{}
-	baseStep.tag = tag
-	baseStep.attributes = attributes
-	baseStep.text = text
+	baseStep.name = name
+	baseStep.parameters = parameters
+	baseStep.body = body
 	return baseStep, nil
 }

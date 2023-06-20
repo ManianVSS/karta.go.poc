@@ -15,7 +15,7 @@ type ImportStep struct {
 
 func (importStep *ImportStep) InitalizeAndCheck() error {
 
-	if file, ok := importStep.attributes["file"]; ok {
+	if file, ok := importStep.parameters["file"]; ok {
 		importStep.fileName = file
 	} else {
 		return fmt.Errorf("file attribute missing")
@@ -32,10 +32,10 @@ func (importStep *ImportStep) Execute(scope *Scope) (any, error) {
 	return ExecuteFile(scope, BaseDir+importStep.fileName)
 }
 
-func createImportStep(tag string, attributes map[string]string, text string) (Step, error) {
+func createImportStep(name string, parameters map[string]string, body string) (Step, error) {
 	importStep := &ImportStep{}
-	importStep.tag = tag
-	importStep.attributes = attributes
-	importStep.text = text
+	importStep.name = name
+	importStep.parameters = parameters
+	importStep.body = body
 	return importStep, nil
 }

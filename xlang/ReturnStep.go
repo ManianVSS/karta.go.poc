@@ -24,10 +24,10 @@ func (returnStep *ReturnStep) Execute(scope *Scope) (any, error) {
 	return nil, &MethodReturnError{}
 }
 
-func createReturnStep(tag string, attributes map[string]string, text string) (Step, error) {
+func createReturnStep(name string, parameters map[string]string, body string) (Step, error) {
 	returnStep := &ReturnStep{}
-	returnStep.tag = tag
-	returnStep.attributes = attributes
-	returnStep.text = text
+	returnStep.name = name
+	returnStep.parameters = parameters
+	returnStep.body = body
 	return returnStep, nil
 }
